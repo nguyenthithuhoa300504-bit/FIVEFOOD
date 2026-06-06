@@ -2,7 +2,7 @@
              HƯỚNG DẪN KHỞI CHẠY VÀ SỬ DỤNG DỰ ÁN BACKEND
 ========================================================================
 
-Dự án sử dụng: Node.js (Express), MS SQL Server (mssql), JWT (jsonwebtoken) và Swagger UI.UPDATE
+Dự án sử dụng: Node.js (Express), MS SQL Server (mssql), JWT (jsonwebtoken) và Swagger UI.
 
 ------------------------------------------------------------------------
 BƯỚC 1: CÀI ĐẶT THƯ VIỆN PHỤ THUỘC (DEPENDENCIES)
