@@ -17,29 +17,29 @@ let modalActiveProduct = null;
 const DOM = {
   // Theme
   themeToggle: document.getElementById('theme-toggle'),
-  
+
   // Auth
   loginBtn: document.getElementById('login-btn'),
   profileDropdown: document.getElementById('profile-dropdown'),
   profileTrigger: document.getElementById('profile-trigger'),
   usernameDisplay: document.getElementById('username-display'),
   logoutBtn: document.getElementById('logout-btn'),
-  
+
   authModal: document.getElementById('auth-modal'),
   authModalClose: document.getElementById('auth-modal-close'),
   tabLoginBtn: document.getElementById('tab-login-btn'),
   tabRegisterBtn: document.getElementById('tab-register-btn'),
   loginForm: document.getElementById('login-form'),
   registerForm: document.getElementById('register-form'),
-  
+
   // Search
   searchInput: document.getElementById('search-input'),
   searchBtn: document.getElementById('search-btn'),
-  
+
   // Containers
   historyContainer: document.getElementById('history-products-container'),
   favoritesContainer: document.getElementById('favorite-products-container'),
-  
+
   // Product Detail Modal
   productModal: document.getElementById('product-modal'),
   productModalClose: document.getElementById('product-modal-close'),
@@ -54,7 +54,7 @@ const DOM = {
   qtyMinusBtn: document.getElementById('qty-minus-btn'),
   qtyPlusBtn: document.getElementById('qty-plus-btn'),
   modalAddToCartBtn: document.getElementById('modal-add-to-cart-btn'),
-  
+
   // Cart
   cartBtn: document.getElementById('cart-btn'),
   cartCountBadge: document.getElementById('cart-count'),
@@ -73,7 +73,7 @@ const DOM = {
   cartDiscount: document.getElementById('cart-discount'),
   cartTotal: document.getElementById('cart-total'),
   checkoutBtn: document.getElementById('checkout-btn'),
-  
+
   // Profile Modal
   profileModal: document.getElementById('profile-modal'),
   profileModalClose: document.getElementById('profile-modal-close'),
@@ -95,7 +95,7 @@ const DOM = {
   ordersModal: document.getElementById('orders-modal'),
   ordersModalClose: document.getElementById('orders-modal-close'),
   ordersListContainer: document.getElementById('orders-list-container'),
-  
+
   // Toast notifications
   toastContainer: document.getElementById('toast-container'),
 };
@@ -110,19 +110,19 @@ function formatPrice(number) {
 function showToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  
+
   let iconClass = 'fa-solid fa-circle-check';
   if (type === 'error') iconClass = 'fa-solid fa-circle-exclamation';
   if (type === 'info') iconClass = 'fa-solid fa-circle-info';
   if (type === 'warning') iconClass = 'fa-solid fa-triangle-exclamation';
-  
+
   toast.innerHTML = `
     <i class="${iconClass}"></i>
     <span>${message}</span>
   `;
-  
+
   DOM.toastContainer.appendChild(toast);
-  
+
   setTimeout(() => {
     toast.style.animation = 'slide-in-toast 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) reverse forwards';
     setTimeout(() => {
@@ -148,7 +148,7 @@ async function initApp() {
 
   updateUserUI();
   updateCartBadge();
-  
+
   if (currentUser && currentToken) {
     await syncFavoritesFromDB();
     syncCartFromDB();
@@ -161,7 +161,7 @@ async function initApp() {
 function toggleTheme() {
   const isDark = document.body.classList.toggle('dark-mode');
   localStorage.setItem('fe_dark_mode', isDark);
-  
+
   if (isDark) {
     DOM.themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
     DOM.themeToggle.title = "Chuyển chế độ sáng";
@@ -180,10 +180,10 @@ function switchTab(tabName) {
   document.querySelectorAll('.favorites-tab').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
   });
-  
+
   const historyPanel = document.getElementById('tab-content-history');
   const favoritesPanel = document.getElementById('tab-content-favorites');
-  
+
   if (tabName === 'history') {
     historyPanel.style.display = 'block';
     favoritesPanel.style.display = 'none';
@@ -191,7 +191,7 @@ function switchTab(tabName) {
     historyPanel.style.display = 'none';
     favoritesPanel.style.display = 'block';
   }
-  
+
   loadTabContent();
 }
 
@@ -220,7 +220,7 @@ async function loadHistoryTab() {
 
   try {
     DOM.historyContainer.innerHTML = Array(3).fill('<div class="skeleton-card product-skeleton"></div>').join('');
-    
+
     const res = await fetch('/api/sanpham/dathang', {
       headers: {
         'Authorization': `Bearer ${currentToken}`
@@ -283,13 +283,13 @@ function renderProductsList(products, container, emptyMsg) {
     const isOutOfStock = p.SoLuongTon <= 0;
     const stockClass = isOutOfStock ? 'tag-outstock' : 'tag-instock';
     const stockText = isOutOfStock ? 'Hết hàng' : `Còn ${p.SoLuongTon} suất`;
-    
-    const imgUrl = p.HinhAnh && p.HinhAnh.startsWith('http') 
-      ? p.HinhAnh 
+
+    const imgUrl = p.HinhAnh && p.HinhAnh.startsWith('http')
+      ? p.HinhAnh
       : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
-      
+
     const isFav = favorites.some(fav => fav.SanPhamID === p.SanPhamID);
-    
+
     const pCard = document.createElement('div');
     pCard.className = `product-card ${isOutOfStock ? 'out-of-stock' : ''}`;
     pCard.setAttribute('data-id', p.SanPhamID);
@@ -299,7 +299,7 @@ function renderProductsList(products, container, emptyMsg) {
     const count = parseInt(p.TongDanhGia) || 0;
     let starsHtml = '';
     if (count > 0) {
-      const starIcons = Array.from({length: 5}, (_, i) => {
+      const starIcons = Array.from({ length: 5 }, (_, i) => {
         if (i < Math.floor(avg)) return '<i class="fa-solid fa-star"></i>';
         if (i < avg) return '<i class="fa-solid fa-star-half-stroke"></i>';
         return '<i class="fa-regular fa-star"></i>';
@@ -328,7 +328,7 @@ function renderProductsList(products, container, emptyMsg) {
         </div>
       </div>
     `;
-    
+
     pCard.addEventListener('click', (e) => {
       if (!e.target.closest('.btn-add-cart-simple') && !e.target.closest('.favorite-toggle-btn')) {
         openProductModal(p.SanPhamID);
@@ -339,18 +339,18 @@ function renderProductsList(products, container, emptyMsg) {
   });
 }
 
-window.toggleFavorite = async function(e, id, productObj) {
+window.toggleFavorite = async function (e, id, productObj) {
   e.stopPropagation();
-  
+
   const existingIdx = favorites.findIndex(fav => fav.SanPhamID === id);
   const btn = e.currentTarget;
-  
+
   if (existingIdx > -1) {
     // Remove
     favorites.splice(existingIdx, 1);
     btn.classList.remove('active');
     showToast(`Đã bỏ thích món "${productObj.TenSanPham}" 💔`, 'info');
-    
+
     if (currentUser && currentToken) {
       try {
         await fetch(`/api/yeuthich/${id}`, {
@@ -366,7 +366,7 @@ window.toggleFavorite = async function(e, id, productObj) {
     favorites.push(productObj);
     btn.classList.add('active');
     showToast(`Đã thêm "${productObj.TenSanPham}" vào yêu thích! 💖`, 'success');
-    
+
     if (currentUser && currentToken) {
       try {
         await fetch('/api/yeuthich', {
@@ -382,9 +382,9 @@ window.toggleFavorite = async function(e, id, productObj) {
       }
     }
   }
-  
+
   localStorage.setItem('fe_favorites', JSON.stringify(favorites));
-  
+
   // Refresh layout
   if (currentTab === 'favorites') {
     loadFavoritesTab();
@@ -401,24 +401,24 @@ async function openProductModal(productId) {
     const res = await fetch(`/api/sanpham/${productId}`);
     if (!res.ok) throw new Error('Cannot fetch product details');
     const product = await res.json();
-    
+
     modalActiveProduct = product;
-    
-    const imgUrl = product.HinhAnh && product.HinhAnh.startsWith('http') 
-      ? product.HinhAnh 
+
+    const imgUrl = product.HinhAnh && product.HinhAnh.startsWith('http')
+      ? product.HinhAnh
       : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
-      
+
     DOM.modalProductImg.src = imgUrl;
     DOM.modalProductImg.onerror = () => { DOM.modalProductImg.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600'; };
     DOM.modalProductCategory.textContent = product.TenDanhMuc || 'Thực Phẩm';
     DOM.modalProductTitle.textContent = product.TenSanPham;
-    
+
     const starsWrapper = document.getElementById('modal-product-stars-wrapper');
     if (starsWrapper) {
       const avg = parseFloat(product.TrungBinhSao) || 0;
       const count = parseInt(product.TongDanhGia) || 0;
       if (count > 0) {
-        const starIcons = Array.from({length: 5}, (_, i) => {
+        const starIcons = Array.from({ length: 5 }, (_, i) => {
           if (i < Math.floor(avg)) return '<i class="fa-solid fa-star"></i>';
           if (i < avg) return '<i class="fa-solid fa-star-half-stroke"></i>';
           return '<i class="fa-regular fa-star"></i>';
@@ -431,15 +431,15 @@ async function openProductModal(productId) {
 
     DOM.modalProductPrice.textContent = formatPrice(product.Gia);
     DOM.modalProductDesc.textContent = product.MoTa || 'Món ăn ngon, chuẩn sạch vệ sinh chế biến và phục vụ nóng sốt trực tiếp.';
-    
+
     const isOutOfStock = product.SoLuongTon <= 0;
     DOM.modalProductStockBadge.textContent = isOutOfStock ? 'Tạm Hết Hàng' : 'Đang Bán';
     DOM.modalProductStockBadge.className = `stock-badge ${isOutOfStock ? 'out-of-stock' : ''}`;
     DOM.modalProductStockNum.textContent = isOutOfStock ? 'Quý khách vui lòng chọn món khác' : `Còn lại: ${product.SoLuongTon} phần trong kho`;
-    
+
     DOM.qtyInput.value = 1;
     DOM.qtyInput.setAttribute('max', product.SoLuongTon);
-    
+
     if (isOutOfStock) {
       DOM.modalAddToCartBtn.setAttribute('disabled', 'true');
       DOM.modalAddToCartBtn.innerHTML = '<i class="fa-solid fa-ban"></i> Tạm hết hàng';
@@ -453,24 +453,24 @@ async function openProductModal(productId) {
       DOM.qtyMinusBtn.removeAttribute('disabled');
       DOM.qtyPlusBtn.removeAttribute('disabled');
     }
-    
+
     DOM.productModal.classList.add('open');
     document.body.style.overflow = 'hidden';
 
     // Fetch and render reviews list
     const reviewsContainer = document.getElementById('modal-product-reviews-container');
     const reviewsCountSpan = document.getElementById('modal-product-reviews-count');
-    
+
     if (reviewsContainer && reviewsCountSpan) {
       reviewsContainer.innerHTML = `<div style="text-align: center; padding: 10px; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải đánh giá...</div>`;
       reviewsCountSpan.textContent = '0';
-      
+
       try {
         const reviewsRes = await fetch(`/api/danhgia/sanpham/${productId}`);
         if (reviewsRes.ok) {
           const reviews = await reviewsRes.json();
           reviewsCountSpan.textContent = reviews.length;
-          
+
           if (reviews.length === 0) {
             reviewsContainer.innerHTML = `
               <div style="text-align: center; padding: 20px 10px; color: var(--text-muted); font-size: 13px;">
@@ -485,14 +485,14 @@ async function openProductModal(productId) {
                 timeZone: 'Asia/Ho_Chi_Minh',
                 day: '2-digit', month: '2-digit', year: 'numeric'
               });
-              
-              const starIcons = Array.from({length: 5}, (_, i) => {
+
+              const starIcons = Array.from({ length: 5 }, (_, i) => {
                 if (i < rev.SoSao) return '<i class="fa-solid fa-star"></i>';
                 return '<i class="fa-regular fa-star"></i>';
               }).join('');
-              
+
               const commentText = rev.BinhLuan || 'Khách hàng không để lại bình luận.';
-              
+
               reviewsContainer.innerHTML += `
                 <div class="user-review-row">
                   <div class="user-review-header">
@@ -555,16 +555,16 @@ DOM.qtyInput.addEventListener('change', () => {
 DOM.modalAddToCartBtn.addEventListener('click', () => {
   if (!modalActiveProduct) return;
   const qty = parseInt(DOM.qtyInput.value) || 1;
-  
-  const imgUrl = modalActiveProduct.HinhAnh && modalActiveProduct.HinhAnh.startsWith('http') 
-    ? modalActiveProduct.HinhAnh 
+
+  const imgUrl = modalActiveProduct.HinhAnh && modalActiveProduct.HinhAnh.startsWith('http')
+    ? modalActiveProduct.HinhAnh
     : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
-    
+
   addToCart(modalActiveProduct.SanPhamID, modalActiveProduct.TenSanPham, modalActiveProduct.Gia, imgUrl, modalActiveProduct.SoLuongTon, qty);
   closeProductModal();
 });
 
-window.quickAddToCart = function(e, id, name, price, img, maxStock) {
+window.quickAddToCart = function (e, id, name, price, img, maxStock) {
   e.stopPropagation();
   if (maxStock <= 0) {
     showToast('Món ăn đã hết hàng!', 'error');
@@ -646,7 +646,7 @@ function renderCart() {
 
   DOM.cartFooter.style.display = 'block';
   DOM.cartItemsContainer.innerHTML = '';
-  
+
   cart.forEach(item => {
     const itemCard = document.createElement('div');
     itemCard.className = 'cart-item';
@@ -671,7 +671,7 @@ function renderCart() {
   calculateCartSummary();
 }
 
-window.deleteCartItem = async function(id) {
+window.deleteCartItem = async function (id) {
   const item = cart.find(i => i.id === id);
   cart = cart.filter(i => i.id !== id);
   localStorage.setItem('fe_cart', JSON.stringify(cart));
@@ -695,7 +695,7 @@ window.deleteCartItem = async function(id) {
   }
 };
 
-window.updateCartItemQty = async function(id, direction) {
+window.updateCartItemQty = async function (id, direction) {
   const itemIndex = cart.findIndex(item => item.id === id);
   if (itemIndex === -1) return;
 
@@ -814,15 +814,15 @@ async function syncFavoritesFromDB() {
 function calculateCartSummary() {
   const subtotal = cart.reduce((total, item) => total + (item.price * item.qty), 0);
   DOM.cartSubtotal.textContent = formatPrice(subtotal);
-  
+
   let discount = 0;
-  
+
   if (appliedCoupon) {
     DOM.appliedCouponStatus.style.display = 'flex';
     DOM.couponInput.style.display = 'none';
     DOM.applyCouponBtn.style.display = 'none';
     DOM.couponTagName.textContent = appliedCoupon.code;
-    
+
     if (subtotal < appliedCoupon.minVal) {
       discount = 0;
       DOM.couponDiscountValue.innerHTML = `<span class="text-danger" style="font-size: 11px;">Thiếu đơn tối thiểu ${formatPrice(appliedCoupon.minVal)}</span>`;
@@ -858,11 +858,11 @@ DOM.applyCouponBtn.addEventListener('click', async () => {
   }
 
   const subtotal = cart.reduce((total, item) => total + (item.price * item.qty), 0);
-  
+
   try {
     DOM.applyCouponBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
     DOM.applyCouponBtn.setAttribute('disabled', 'true');
-    
+
     const res = await fetch('/api/khuyenmai/ap-dung', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -870,7 +870,7 @@ DOM.applyCouponBtn.addEventListener('click', async () => {
     });
 
     const result = await res.json();
-    
+
     if (res.status === 200) {
       const km = result.data;
       appliedCoupon = {
@@ -880,7 +880,7 @@ DOM.applyCouponBtn.addEventListener('click', async () => {
         minVal: km.DieuKienToiThieu,
         id: km.KhuyenMaiID
       };
-      
+
       localStorage.setItem('fe_coupon', JSON.stringify(appliedCoupon));
       DOM.couponInput.value = '';
       calculateCartSummary();
@@ -922,7 +922,7 @@ DOM.checkoutBtn.addEventListener('click', () => {
   sessionStorage.setItem('fe_delivery_address', currentUser.DiaChi || '');
   sessionStorage.setItem('fe_checkout_temp_phone', currentUser.SoDienThoai || '');
   sessionStorage.setItem('fe_checkout_from_favorites', 'true');
-  
+
   // Go to homepage with checkout query parameter
   window.location.href = 'index.html?action=checkout';
 });
@@ -953,10 +953,10 @@ DOM.tabRegisterBtn.addEventListener('click', () => {
 
 DOM.loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const username = document.getElementById('login-username').value.trim();
   const password = document.getElementById('login-password').value.trim();
-  
+
   try {
     const submitBtn = DOM.loginForm.querySelector('button[type="submit"]');
     submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Đang xác thực...';
@@ -969,7 +969,7 @@ DOM.loginForm.addEventListener('submit', async (e) => {
     });
 
     const data = await res.json();
-    
+
     if (res.status === 200) {
       currentUser = data.user;
       currentToken = data.token;
@@ -1000,18 +1000,18 @@ DOM.loginForm.addEventListener('submit', async (e) => {
 
 DOM.registerForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const username = document.getElementById('reg-username').value.trim();
   const fullname = document.getElementById('reg-fullname').value.trim();
   const email = document.getElementById('reg-email').value.trim();
   const phone = document.getElementById('reg-phone').value.trim();
   const password = document.getElementById('reg-password').value.trim();
-  
+
   if (password.length < 6) {
     showToast('Mật khẩu bảo mật phải chứa ít nhất 6 ký tự!', 'warning');
     return;
   }
-  
+
   try {
     const submitBtn = DOM.registerForm.querySelector('button[type="submit"]');
     submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo tài khoản...';
@@ -1032,10 +1032,10 @@ DOM.registerForm.addEventListener('submit', async (e) => {
     });
 
     const data = await res.json();
-    
+
     if (res.status === 201 || res.status === 200) {
       showToast('Đăng ký tài khoản thành công! Đang tự động đăng nhập...', 'success');
-      
+
       document.getElementById('login-username').value = username;
       document.getElementById('login-password').value = password;
       DOM.tabLoginBtn.click();
@@ -1059,7 +1059,7 @@ function updateUserUI() {
     DOM.loginBtn.style.display = 'none';
     DOM.profileDropdown.style.display = 'block';
     DOM.usernameDisplay.textContent = currentUser.HoTen.split(' ').pop();
-    
+
     const adminBtn = document.getElementById('menu-admin-btn');
     if (adminBtn) {
       adminBtn.style.display = currentUser.VaiTroID === 1 ? 'flex' : 'none';
@@ -1091,7 +1091,7 @@ function handleLogout() {
   localStorage.removeItem('fe_token');
   localStorage.removeItem('fe_coupon');
   localStorage.removeItem('fe_favorites');
-  
+
   updateUserUI();
   calculateCartSummary();
   showToast('Đã đăng xuất khỏi hệ thống thành công!', 'info');
@@ -1107,16 +1107,16 @@ document.getElementById('menu-profile-btn').addEventListener('click', (e) => {
 
 function openProfileModal() {
   if (!currentUser) return;
-  
+
   DOM.profileFullname.value = currentUser.HoTen;
   DOM.profileEmail.value = currentUser.Email || '';
   DOM.profilePhone.value = currentUser.SoDienThoai || '';
   DOM.profileAddress.value = currentUser.DiaChi || '';
-  
+
   DOM.profileDisplayName.textContent = currentUser.HoTen;
   DOM.profileDisplayUsername.textContent = `@${currentUser.TenDangNhap}`;
   DOM.profileRoleBadge.textContent = currentUser.VaiTroID === 1 ? 'Quản trị viên' : 'Khách hàng';
-  
+
   DOM.profileModal.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1134,20 +1134,20 @@ DOM.togglePwdFieldsBtn.addEventListener('click', () => {
 // Profile Form Submit
 DOM.profileForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const fullname = DOM.profileFullname.value.trim();
   const email = DOM.profileEmail.value.trim();
   const phone = DOM.profilePhone.value.trim();
   const address = DOM.profileAddress.value.trim();
   const newPassword = DOM.profileNewPassword.value.trim();
-  
+
   const updateBody = {
     HoTen: fullname,
     Email: email,
     SoDienThoai: phone,
     DiaChi: address
   };
-  
+
   if (newPassword) {
     if (newPassword.length < 6) {
       showToast('Mật khẩu mới phải chứa ít nhất 6 ký tự!', 'warning');
@@ -1155,11 +1155,11 @@ DOM.profileForm.addEventListener('submit', async (e) => {
     }
     updateBody.MatKhau = newPassword;
   }
-  
+
   try {
     DOM.profileSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
     DOM.profileSaveBtn.setAttribute('disabled', 'true');
-    
+
     const res = await fetch(`/api/nguoidung/${currentUser.NguoiDungID}`, {
       method: 'PUT',
       headers: {
@@ -1168,9 +1168,9 @@ DOM.profileForm.addEventListener('submit', async (e) => {
       },
       body: JSON.stringify(updateBody)
     });
-    
+
     const data = await res.json();
-    
+
     if (res.status === 200) {
       currentUser = data.data;
       localStorage.setItem('fe_user', JSON.stringify(currentUser));
@@ -1178,7 +1178,7 @@ DOM.profileForm.addEventListener('submit', async (e) => {
       DOM.profileModal.classList.remove('open');
       document.body.style.overflow = '';
       showToast('Cập nhật thông tin tài khoản thành công!', 'success');
-      
+
       // Reset password fields
       DOM.profileNewPassword.value = '';
       DOM.passwordChangeFields.style.display = 'none';
@@ -1233,14 +1233,14 @@ DOM.ordersModalClose.addEventListener('click', () => {
 async function fetchOrdersHistory() {
   try {
     DOM.ordersListContainer.innerHTML = Array(3).fill('<div class="skeleton-card promotion-skeleton" style="height:80px;margin-bottom:10px;"></div>').join('');
-    
+
     const res = await fetch('/api/hoadon', {
       headers: { 'Authorization': `Bearer ${currentToken}` }
     });
-    
+
     if (!res.ok) throw new Error('Failed');
     const orders = await res.json();
-    
+
     if (orders.length === 0) {
       DOM.ordersListContainer.innerHTML = `
         <div class="empty-orders-view">
@@ -1250,7 +1250,7 @@ async function fetchOrdersHistory() {
       `;
       return;
     }
-    
+
     DOM.ordersListContainer.innerHTML = '';
     orders.forEach(o => {
       const orderDate = new Date(o.NgayDat).toLocaleString('vi-VN', {
@@ -1258,7 +1258,7 @@ async function fetchOrdersHistory() {
         day: '2-digit', month: '2-digit', year: 'numeric',
         hour: '2-digit', minute: '2-digit'
       });
-      
+
       const item = document.createElement('div');
       item.className = 'order-history-card';
       item.style.padding = '15px';
@@ -1266,7 +1266,7 @@ async function fetchOrdersHistory() {
       item.style.borderRadius = '12px';
       item.style.marginBottom = '12px';
       item.style.background = 'var(--bg-card)';
-      
+
       item.innerHTML = `
         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
           <strong>Đơn hàng: HD${o.HoaDonID}</strong>
@@ -1287,12 +1287,12 @@ async function fetchOrdersHistory() {
 
 function setupEventListeners() {
   DOM.themeToggle.addEventListener('click', toggleTheme);
-  
+
   DOM.productModalClose.addEventListener('click', closeProductModal);
   DOM.productModal.addEventListener('click', (e) => {
     if (e.target === DOM.productModal) closeProductModal();
   });
-  
+
   // Tabs click
   document.querySelectorAll('.favorites-tab').forEach(btn => {
     btn.addEventListener('click', () => {

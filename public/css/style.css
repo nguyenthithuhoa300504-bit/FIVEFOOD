@@ -2519,7 +2519,7 @@ body.dark-mode .order-item-header {
   word-break: break-word;
 }
 
-.order-id-date > span:first-child {
+.order-id-date>span:first-child {
   white-space: nowrap;
 }
 

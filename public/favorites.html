@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FoodExpress - Món Ăn Yêu Thích & Lịch Sử Đặt Món</title>
-  
+
   <!-- Google Fonts: Be Vietnam Pro -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"
+    rel="stylesheet">
+
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
-  
+
   <style>
     /* Additional custom styles for Favorites page */
     .favorites-hero {
@@ -27,7 +30,7 @@
       position: relative;
       overflow: hidden;
     }
-    
+
     body.dark-mode .favorites-hero {
       background: linear-gradient(135deg, #1e1b18 0%, #121212 100%);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -105,8 +108,15 @@
     }
 
     @keyframes tab-line-grow {
-      from { width: 0; left: 50%; }
-      to { width: 100%; left: 0; }
+      from {
+        width: 0;
+        left: 50%;
+      }
+
+      to {
+        width: 100%;
+        left: 0;
+      }
     }
 
     .favorites-section-content {
@@ -185,6 +195,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- ==================== HEADER & NAVBAR ==================== -->
@@ -211,7 +222,8 @@
         </button>
 
         <!-- Favorites Button (Active/Highlighted state) -->
-        <a href="favorites.html" class="action-btn" title="Món ăn yêu thích" style="background: rgba(255, 71, 87, 0.1); border-color: rgba(255, 71, 87, 0.2);">
+        <a href="favorites.html" class="action-btn" title="Món ăn yêu thích"
+          style="background: rgba(255, 71, 87, 0.1); border-color: rgba(255, 71, 87, 0.2);">
           <i class="fa-solid fa-heart" style="color: #ff4757;"></i>
         </a>
 
@@ -230,14 +242,16 @@
         <!-- Profile Dropdown (Hidden by default, shown when logged in) -->
         <div class="profile-dropdown" id="profile-dropdown" style="display: none;">
           <button class="action-btn profile-trigger" id="profile-trigger">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" class="avatar-img">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar"
+              class="avatar-img">
             <span class="username-span" id="username-display">Khách</span>
           </button>
           <div class="dropdown-menu">
             <a href="index.html#menu-section"><i class="fa-solid fa-utensils"></i> Khám phá menu</a>
             <a href="#" id="menu-profile-btn"><i class="fa-regular fa-id-card"></i> Tài khoản</a>
             <a href="#" id="menu-orders-btn"><i class="fa-solid fa-receipt"></i> Đơn hàng đã mua</a>
-            <a href="/admin.html" id="menu-admin-btn" style="display: none; color: var(--primary-color);"><i class="fa-solid fa-user-shield"></i> Quản trị hệ thống</a>
+            <a href="/admin.html" id="menu-admin-btn" style="display: none; color: var(--primary-color);"><i
+                class="fa-solid fa-user-shield"></i> Quản trị hệ thống</a>
             <hr>
             <a href="#" id="logout-btn" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
           </div>
@@ -250,7 +264,8 @@
   <section class="favorites-hero">
     <div class="container">
       <h1 class="favorites-hero-title">💖 <span class="text-gradient">Không Gian Ẩm Thực Của Bạn</span></h1>
-      <p class="favorites-hero-desc">Quản lý các món ăn bạn yêu thích và nhanh chóng chọn lại các món ngon đã đặt trước đó chỉ với 1 cú click chuột.</p>
+      <p class="favorites-hero-desc">Quản lý các món ăn bạn yêu thích và nhanh chóng chọn lại các món ngon đã đặt trước
+        đó chỉ với 1 cú click chuột.</p>
     </div>
   </section>
 
@@ -300,7 +315,8 @@
           <span class="logo-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
           <span class="logo-text text-white">Food<span>Express</span></span>
         </a>
-        <p class="footer-desc">FoodExpress là hệ thống đặt đồ ăn trực tuyến hàng đầu, mang đến cho bạn những món ăn chất lượng tốt nhất với dịch vụ giao hàng chuyên nghiệp, an toàn và nhanh chóng.</p>
+        <p class="footer-desc">FoodExpress là hệ thống đặt đồ ăn trực tuyến hàng đầu, mang đến cho bạn những món ăn chất
+          lượng tốt nhất với dịch vụ giao hàng chuyên nghiệp, an toàn và nhanh chóng.</p>
         <div class="social-links">
           <a href="#" class="social-link"><i class="fa-brands fa-facebook-f"></i></a>
           <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
@@ -337,7 +353,7 @@
         </form>
       </div>
     </div>
-    
+
     <div class="container footer-bottom">
       <p>&copy; 2026 FoodExpress. Được xây dựng chuyên nghiệp bằng HTML/CSS/JS thuần và REST API. Hỗ trợ học tập.</p>
     </div>
@@ -357,7 +373,7 @@
           <div id="modal-product-stars-wrapper" style="margin-bottom: 8px;"></div>
           <div class="modal-product-price" id="modal-product-price">0đ</div>
           <p class="modal-product-desc" id="modal-product-desc">Mô tả chi tiết về sản phẩm này...</p>
-          
+
           <div class="stock-status-row">
             <span class="stock-badge" id="modal-product-stock-badge">Còn hàng</span>
             <span class="stock-number" id="modal-product-stock-num">Còn lại: 0 phần</span>
@@ -380,8 +396,10 @@
 
           <!-- Product Reviews Section -->
           <div class="product-reviews-section">
-            <h3 style="font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-              <i class="fa-solid fa-comments text-primary"></i> Đánh giá từ khách hàng (<span id="modal-product-reviews-count">0</span>)
+            <h3
+              style="font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-comments text-primary"></i> Đánh giá từ khách hàng (<span
+                id="modal-product-reviews-count">0</span>)
             </h3>
             <div class="product-reviews-tab-content" id="modal-product-reviews-container">
               <div style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 10px;">
@@ -455,7 +473,7 @@
   <div class="modal-overlay" id="auth-modal">
     <div class="auth-modal-card">
       <button class="modal-close" id="auth-modal-close"><i class="fa-solid fa-xmark"></i></button>
-      
+
       <!-- Tabs header -->
       <div class="auth-tabs">
         <button class="auth-tab active" id="tab-login-btn">Đăng Nhập</button>
@@ -514,15 +532,16 @@
   <div class="modal-overlay" id="profile-modal">
     <div class="profile-modal-card">
       <button class="modal-close" id="profile-modal-close"><i class="fa-solid fa-xmark"></i></button>
-      
+
       <div class="profile-modal-header">
         <h3><i class="fa-regular fa-id-card text-primary"></i> Thông Tin Tài Khoản</h3>
       </div>
-      
+
       <div class="profile-modal-body">
         <div class="profile-avatar-section">
           <div class="avatar-wrapper">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" alt="Avatar" id="profile-avatar-img">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" alt="Avatar"
+              id="profile-avatar-img">
             <span class="role-badge" id="profile-role-badge">Khách hàng</span>
           </div>
           <h4 id="profile-display-name">Họ và tên</h4>
@@ -540,7 +559,7 @@
               <input type="email" id="profile-email" placeholder="Chưa cập nhật...">
             </div>
           </div>
-          
+
           <div class="form-row">
             <div class="form-group">
               <label for="profile-phone"><i class="fa-solid fa-phone"></i> Số điện thoại</label>
@@ -580,11 +599,11 @@
   <div class="modal-overlay" id="orders-modal">
     <div class="orders-modal-card">
       <button class="modal-close" id="orders-modal-close"><i class="fa-solid fa-xmark"></i></button>
-      
+
       <div class="orders-modal-header">
         <h3><i class="fa-solid fa-receipt text-primary"></i> Lịch Sử Đơn Hàng Của Bạn</h3>
       </div>
-      
+
       <div class="orders-modal-body">
         <!-- Status Filter Tabs -->
         <div class="orders-filter-tabs">
@@ -620,16 +639,16 @@
   <div class="modal-overlay" id="review-modal">
     <div class="review-modal-card">
       <button class="modal-close" id="review-modal-close"><i class="fa-solid fa-xmark"></i></button>
-      
+
       <div class="review-modal-header">
         <h3><i class="fa-solid fa-star text-primary"></i> Đánh Giá Món Ăn</h3>
         <p>Ý kiến của bạn sẽ giúp cộng đồng FoodExpress lựa chọn món ăn ngon dễ dàng hơn!</p>
       </div>
-      
+
       <div class="review-modal-body" id="review-items-container">
         <!-- Will be populated dynamically -->
       </div>
-      
+
       <div class="review-submit-bar">
         <button type="button" class="btn btn-primary" id="submit-reviews-btn">
           <i class="fa-regular fa-paper-plane"></i> Gửi Đánh Giá Của Bạn
@@ -644,4 +663,5 @@
   <!-- Custom JavaScript for Favorites Page -->
   <script src="js/favorites.js"></script>
 </body>
+
 </html>

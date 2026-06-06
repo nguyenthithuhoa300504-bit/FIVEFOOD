@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FoodExpress - Giao Đồ Ăn Nhanh & Nóng Hổi</title>
-  
+
   <!-- Google Fonts: Be Vietnam Pro (Vietnamese-optimized) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"
+    rel="stylesheet">
+
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
   <!-- ==================== HEADER & NAVBAR ==================== -->
@@ -61,14 +65,17 @@
         <!-- Profile Dropdown (Hidden by default, shown when logged in) -->
         <div class="profile-dropdown" id="profile-dropdown" style="display: none;">
           <button class="action-btn profile-trigger" id="profile-trigger">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" class="avatar-img">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar"
+              class="avatar-img">
             <span class="username-span" id="username-display">Khách</span>
           </button>
           <div class="dropdown-menu">
             <a href="#" id="menu-profile-btn"><i class="fa-regular fa-id-card"></i> Tài khoản</a>
             <a href="#" id="menu-orders-btn"><i class="fa-solid fa-receipt"></i> Đơn hàng đã mua</a>
-            <a href="favorites.html" id="menu-favorites-btn"><i class="fa-solid fa-heart" style="color: #ff4757;"></i> Món ăn yêu thích</a>
-            <a href="/admin.html" id="menu-admin-btn" style="display: none; color: var(--primary);"><i class="fa-solid fa-user-shield"></i> Quản trị hệ thống</a>
+            <a href="favorites.html" id="menu-favorites-btn"><i class="fa-solid fa-heart" style="color: #ff4757;"></i>
+              Món ăn yêu thích</a>
+            <a href="/admin.html" id="menu-admin-btn" style="display: none; color: var(--primary);"><i
+                class="fa-solid fa-user-shield"></i> Quản trị hệ thống</a>
             <hr>
             <a href="#" id="logout-btn" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
           </div>
@@ -81,13 +88,16 @@
   <section class="hero-section">
     <div class="container hero-container">
       <div class="hero-content">
-        <span class="badge badge-hero"><i class="fa-solid fa-truck-ramp-box"></i> Giao hàng siêu tốc trong 20 phút</span>
+        <span class="badge badge-hero"><i class="fa-solid fa-truck-ramp-box"></i> Giao hàng siêu tốc trong 20
+          phút</span>
         <h1 class="hero-title">Đập tan cơn đói với món ăn <span class="text-gradient">Nóng Hổi & Thơm Ngon!</span></h1>
-        <p class="hero-subtitle">Đặt món dễ dàng từ danh mục đa dạng phong phú, áp dụng ngập tràn mã giảm giá và giao tận tay bạn chỉ trong một nốt nhạc.</p>
-        
+        <p class="hero-subtitle">Đặt món dễ dàng từ danh mục đa dạng phong phú, áp dụng ngập tràn mã giảm giá và giao
+          tận tay bạn chỉ trong một nốt nhạc.</p>
+
         <div class="hero-actions-row">
           <a href="#menu-section" class="btn btn-primary btn-lg"><i class="fa-solid fa-utensils"></i> Khám Phá Menu</a>
-          <a href="#promotions-section" class="btn btn-outline btn-lg"><i class="fa-solid fa-percent"></i> Xem Khuyến Mãi</a>
+          <a href="#promotions-section" class="btn btn-outline btn-lg"><i class="fa-solid fa-percent"></i> Xem Khuyến
+            Mãi</a>
         </div>
 
         <div class="hero-stats">
@@ -105,11 +115,12 @@
           </div>
         </div>
       </div>
-      
+
       <div class="hero-visual">
         <div class="visual-bg-glow"></div>
         <div class="hero-card-floating">
-          <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600" alt="Special Burger" class="floating-img">
+          <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600" alt="Special Burger"
+            class="floating-img">
           <div class="floating-badge badge-top">
             <span class="icon-circle"><i class="fa-solid fa-fire"></i></span>
             <div>
@@ -137,7 +148,8 @@
           <span class="section-subtitle">Ưu đãi độc quyền</span>
           <h2 class="section-title">🔥 Khuyến Mãi Đang Diễn Ra</h2>
         </div>
-        <p class="section-desc">Click trực tiếp vào mã khuyến mãi bên dưới để sao chép nhanh và áp dụng khi thanh toán đơn hàng!</p>
+        <p class="section-desc">Click trực tiếp vào mã khuyến mãi bên dưới để sao chép nhanh và áp dụng khi thanh toán
+          đơn hàng!</p>
       </div>
 
       <div class="promotions-grid" id="promotions-container">
@@ -172,7 +184,8 @@
       <!-- Search Result Status Info -->
       <div id="search-status-wrapper" class="search-status-wrapper" style="display: none;">
         <span id="search-status-text">Kết quả tìm kiếm cho: "..."</span>
-        <button id="clear-search-btn" class="btn-clear-search"><i class="fa-solid fa-circle-xmark"></i> Xóa tìm kiếm</button>
+        <button id="clear-search-btn" class="btn-clear-search"><i class="fa-solid fa-circle-xmark"></i> Xóa tìm
+          kiếm</button>
       </div>
 
       <!-- Products Grid -->
@@ -217,7 +230,8 @@
           <span class="logo-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
           <span class="logo-text text-white">Food<span>Express</span></span>
         </a>
-        <p class="footer-desc">FoodExpress là hệ thống đặt đồ ăn trực tuyến hàng đầu, mang đến cho bạn những món ăn chất lượng tốt nhất với dịch vụ giao hàng chuyên nghiệp, an toàn và nhanh chóng.</p>
+        <p class="footer-desc">FoodExpress là hệ thống đặt đồ ăn trực tuyến hàng đầu, mang đến cho bạn những món ăn chất
+          lượng tốt nhất với dịch vụ giao hàng chuyên nghiệp, an toàn và nhanh chóng.</p>
         <div class="social-links">
           <a href="#" class="social-link"><i class="fa-brands fa-facebook-f"></i></a>
           <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
@@ -254,7 +268,7 @@
         </form>
       </div>
     </div>
-    
+
     <div class="container footer-bottom">
       <p>&copy; 2026 FoodExpress. Được xây dựng chuyên nghiệp bằng HTML/CSS/JS thuần và REST API. Hỗ trợ học tập.</p>
     </div>
@@ -274,7 +288,7 @@
           <div id="modal-product-stars-wrapper" style="margin-bottom: 8px;"></div>
           <div class="modal-product-price" id="modal-product-price">0đ</div>
           <p class="modal-product-desc" id="modal-product-desc">Mô tả chi tiết về sản phẩm này...</p>
-          
+
           <div class="stock-status-row">
             <span class="stock-badge" id="modal-product-stock-badge">Còn hàng</span>
             <span class="stock-number" id="modal-product-stock-num">Còn lại: 0 phần</span>
@@ -297,8 +311,10 @@
 
           <!-- Product Reviews Section -->
           <div class="product-reviews-section">
-            <h3 style="font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-              <i class="fa-solid fa-comments text-primary"></i> Đánh giá từ khách hàng (<span id="modal-product-reviews-count">0</span>)
+            <h3
+              style="font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-comments text-primary"></i> Đánh giá từ khách hàng (<span
+                id="modal-product-reviews-count">0</span>)
             </h3>
             <div class="product-reviews-tab-content" id="modal-product-reviews-container">
               <div style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 10px;">
@@ -372,7 +388,7 @@
   <div class="modal-overlay" id="auth-modal">
     <div class="auth-modal-card">
       <button class="modal-close" id="auth-modal-close"><i class="fa-solid fa-xmark"></i></button>
-      
+
       <!-- Tabs header -->
       <div class="auth-tabs">
         <button class="auth-tab active" id="tab-login-btn">Đăng Nhập</button>
@@ -431,15 +447,16 @@
   <div class="modal-overlay" id="profile-modal">
     <div class="profile-modal-card">
       <button class="modal-close" id="profile-modal-close"><i class="fa-solid fa-xmark"></i></button>
-      
+
       <div class="profile-modal-header">
         <h3><i class="fa-regular fa-id-card text-primary"></i> Thông Tin Tài Khoản</h3>
       </div>
-      
+
       <div class="profile-modal-body">
         <div class="profile-avatar-section">
           <div class="avatar-wrapper">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" alt="Avatar" id="profile-avatar-img">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" alt="Avatar"
+              id="profile-avatar-img">
             <span class="role-badge" id="profile-role-badge">Khách hàng</span>
           </div>
           <h4 id="profile-display-name">Họ và tên</h4>
@@ -457,7 +474,7 @@
               <input type="email" id="profile-email" placeholder="Chưa cập nhật...">
             </div>
           </div>
-          
+
           <div class="form-row">
             <div class="form-group">
               <label for="profile-phone"><i class="fa-solid fa-phone"></i> Số điện thoại</label>
@@ -497,7 +514,7 @@
   <div class="modal-overlay" id="orders-modal">
     <div class="orders-modal-card">
       <button class="modal-close" id="orders-modal-close"><i class="fa-solid fa-xmark"></i></button>
-      
+
       <div class="orders-modal-header">
         <h3><i class="fa-solid fa-receipt text-primary"></i> Lịch Sử Đơn Hàng Của Bạn</h3>
         <button id="orders-refresh-btn" onclick="fetchOrders()" title="Làm mới danh sách đơn hàng" style="
@@ -505,11 +522,12 @@
           border-radius: 8px; padding: 5px 12px; font-size: 13px; font-weight: 600;
           cursor: pointer; display: flex; align-items: center; gap: 6px;
           transition: all 0.2s;
-        " onmouseover="this.style.background='var(--primary)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--primary)'">
+        " onmouseover="this.style.background='var(--primary)';this.style.color='#fff'"
+          onmouseout="this.style.background='none';this.style.color='var(--primary)'">
           <i class="fa-solid fa-rotate-right"></i> Làm mới
         </button>
       </div>
-      
+
       <div class="orders-modal-body">
         <!-- Status Filter Tabs -->
         <div class="orders-filter-tabs">
@@ -546,16 +564,16 @@
   <div class="modal-overlay" id="review-modal">
     <div class="review-modal-card">
       <button class="modal-close" id="review-modal-close"><i class="fa-solid fa-xmark"></i></button>
-      
+
       <div class="review-modal-header">
         <h3><i class="fa-solid fa-star text-primary"></i> Đánh Giá Món Ăn</h3>
         <p>Ý kiến của bạn sẽ giúp cộng đồng FoodExpress lựa chọn món ăn ngon dễ dàng hơn!</p>
       </div>
-      
+
       <div class="review-modal-body" id="review-items-container">
         <!-- Sẽ được hiển thị tự động bằng JS -->
       </div>
-      
+
       <div class="review-submit-bar">
         <button type="button" class="btn btn-primary" id="submit-reviews-btn">
           <i class="fa-regular fa-paper-plane"></i> Gửi Đánh Giá Của Bạn
@@ -568,7 +586,7 @@
   <div class="modal-overlay" id="checkout-modal">
     <div class="checkout-modal-card">
       <button class="modal-close" id="checkout-modal-close"><i class="fa-solid fa-xmark"></i></button>
-      
+
       <div class="checkout-modal-header">
         <h3><i class="fa-solid fa-map-location-dot text-primary"></i> Xác Nhận Đặt Hàng</h3>
         <p>Vui lòng kiểm tra và điền đầy đủ thông tin giao hàng bên dưới.</p>
@@ -576,10 +594,12 @@
 
       <form id="checkout-form" class="checkout-form">
         <div class="form-group">
-          <label for="checkout-address"><i class="fa-solid fa-location-dot"></i> Địa chỉ nhận hàng <span class="required-star">*</span></label>
+          <label for="checkout-address"><i class="fa-solid fa-location-dot"></i> Địa chỉ nhận hàng <span
+              class="required-star">*</span></label>
           <div class="address-input-row">
             <input type="text" id="checkout-address" placeholder="Nhập địa chỉ hoặc chọn trên bản đồ...">
-            <button type="button" id="open-map-btn" class="btn-open-map" onclick="openDeliveryMap()" title="Chọn vị trí trên bản đồ">
+            <button type="button" id="open-map-btn" class="btn-open-map" onclick="openDeliveryMap()"
+              title="Chọn vị trí trên bản đồ">
               <i class="fa-solid fa-map-location-dot"></i>
               <span>Bản đồ</span>
             </button>
@@ -587,7 +607,8 @@
         </div>
 
         <div class="form-group">
-          <label for="checkout-phone"><i class="fa-solid fa-phone"></i> Số điện thoại nhận hàng <span class="required-star">*</span></label>
+          <label for="checkout-phone"><i class="fa-solid fa-phone"></i> Số điện thoại nhận hàng <span
+              class="required-star">*</span></label>
           <input type="tel" id="checkout-phone" placeholder="Nhập số điện thoại nhận hàng...">
         </div>
 
@@ -611,7 +632,8 @@
             <!-- Option 2: MoMo -->
             <div class="payment-method-card" data-value="Ví MoMo">
               <div class="pm-icon pm-momo">
-                <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo" onerror="this.style.display='none';this.parentNode.innerHTML='<i class=\'fa-solid fa-mobile-screen-button\'></i>'">
+                <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo"
+                  onerror="this.style.display='none';this.parentNode.innerHTML='<i class=\'fa-solid fa-mobile-screen-button\'></i>'">
               </div>
               <div class="pm-info">
                 <span class="pm-name">Ví MoMo</span>
@@ -652,7 +674,8 @@
             <div class="pd-info-list">
               <div class="pd-info-row">
                 <span class="pd-info-label"><i class="fa-solid fa-phone"></i> Số điện thoại</span>
-                <span class="pd-info-value pd-copyable" data-copy="0901234567">0901 234 567 <i class="fa-regular fa-copy"></i></span>
+                <span class="pd-info-value pd-copyable" data-copy="0901234567">0901 234 567 <i
+                    class="fa-regular fa-copy"></i></span>
               </div>
               <div class="pd-info-row">
                 <span class="pd-info-label"><i class="fa-solid fa-user"></i> Chủ tài khoản</span>
@@ -664,13 +687,15 @@
               </div>
             </div>
           </div>
-          <p class="pd-note"><i class="fa-solid fa-circle-info"></i> Vui lòng chuyển khoản đúng số tiền và ghi đúng nội dung. Đơn hàng sẽ được xác nhận sau khi nhận thanh toán.</p>
+          <p class="pd-note"><i class="fa-solid fa-circle-info"></i> Vui lòng chuyển khoản đúng số tiền và ghi đúng nội
+            dung. Đơn hàng sẽ được xác nhận sau khi nhận thanh toán.</p>
         </div>
 
         <!-- Bank Transfer Details (hiện khi chọn Ngân hàng) -->
         <div class="payment-detail-panel" id="panel-bank" style="display:none;">
           <div class="payment-detail-header">
-            <span class="pd-badge pd-badge-bank"><i class="fa-solid fa-building-columns"></i> Thông tin tài khoản ngân hàng</span>
+            <span class="pd-badge pd-badge-bank"><i class="fa-solid fa-building-columns"></i> Thông tin tài khoản ngân
+              hàng</span>
           </div>
           <div class="payment-detail-body pd-bank-body">
             <div class="pd-info-list pd-info-list-full">
@@ -680,7 +705,8 @@
               </div>
               <div class="pd-info-row">
                 <span class="pd-info-label"><i class="fa-solid fa-credit-card"></i> Số tài khoản</span>
-                <span class="pd-info-value pd-copyable" data-copy="1234567890123">1234 5678 90123 <i class="fa-regular fa-copy"></i></span>
+                <span class="pd-info-value pd-copyable" data-copy="1234567890123">1234 5678 90123 <i
+                    class="fa-regular fa-copy"></i></span>
               </div>
               <div class="pd-info-row">
                 <span class="pd-info-label"><i class="fa-solid fa-user"></i> Chủ tài khoản</span>
@@ -692,7 +718,8 @@
               </div>
             </div>
           </div>
-          <p class="pd-note"><i class="fa-solid fa-circle-info"></i> Vui lòng chuyển đúng số tiền. Đơn hàng được xử lý trong vòng 5-10 phút sau khi nhận thanh toán.</p>
+          <p class="pd-note"><i class="fa-solid fa-circle-info"></i> Vui lòng chuyển đúng số tiền. Đơn hàng được xử lý
+            trong vòng 5-10 phút sau khi nhận thanh toán.</p>
         </div>
 
         <div class="form-group">
@@ -726,15 +753,16 @@
         <div class="success-ring-inner"></div>
         <div class="success-checkmark">
           <svg viewBox="0 0 52 52" class="checkmark-svg">
-            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
-            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
           </svg>
         </div>
       </div>
 
       <div class="success-badge-label">🎉 Đặt Hàng Thành Công!</div>
       <h2 class="success-title">Cảm ơn bạn đã tin tưởng<br><span class="text-gradient">FoodExpress!</span></h2>
-      <p class="success-subtitle">Đơn hàng của bạn đã được tiếp nhận và đang được chuẩn bị. Shipper sẽ giao đến bạn sớm nhất! 🛵💨</p>
+      <p class="success-subtitle">Đơn hàng của bạn đã được tiếp nhận và đang được chuẩn bị. Shipper sẽ giao đến bạn sớm
+        nhất! 🛵💨</p>
 
       <!-- Order Info Cards -->
       <div class="success-info-grid">
@@ -803,4 +831,5 @@
   <!-- Custom JavaScript -->
   <script src="js/app.js"></script>
 </body>
+
 </html>

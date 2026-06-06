@@ -24,33 +24,33 @@ let searchDebounceTimer = null;
 const DOM = {
   // Theme
   themeToggle: document.getElementById('theme-toggle'),
-  
+
   // Auth
   loginBtn: document.getElementById('login-btn'),
   profileDropdown: document.getElementById('profile-dropdown'),
   profileTrigger: document.getElementById('profile-trigger'),
   usernameDisplay: document.getElementById('username-display'),
   logoutBtn: document.getElementById('logout-btn'),
-  
+
   authModal: document.getElementById('auth-modal'),
   authModalClose: document.getElementById('auth-modal-close'),
   tabLoginBtn: document.getElementById('tab-login-btn'),
   tabRegisterBtn: document.getElementById('tab-register-btn'),
   loginForm: document.getElementById('login-form'),
   registerForm: document.getElementById('register-form'),
-  
+
   // Search
   searchInput: document.getElementById('search-input'),
   searchBtn: document.getElementById('search-btn'),
   searchStatusWrapper: document.getElementById('search-status-wrapper'),
   searchStatusText: document.getElementById('search-status-text'),
   clearSearchBtn: document.getElementById('clear-search-btn'),
-  
+
   // Lists Containers
   promotionsContainer: document.getElementById('promotions-container'),
   categoryTabsContainer: document.getElementById('category-tabs-container'),
   productsContainer: document.getElementById('products-container'),
-  
+
   // Product Detail Modal
   productModal: document.getElementById('product-modal'),
   productModalClose: document.getElementById('product-modal-close'),
@@ -65,7 +65,7 @@ const DOM = {
   qtyMinusBtn: document.getElementById('qty-minus-btn'),
   qtyPlusBtn: document.getElementById('qty-plus-btn'),
   modalAddToCartBtn: document.getElementById('modal-add-to-cart-btn'),
-  
+
   // Cart
   cartBtn: document.getElementById('cart-btn'),
   cartCountBadge: document.getElementById('cart-count'),
@@ -85,7 +85,7 @@ const DOM = {
   cartTotal: document.getElementById('cart-total'),
   checkoutBtn: document.getElementById('checkout-btn'),
   emptyCartExploreBtn: document.getElementById('empty-cart-explore-btn'),
-  
+
   // Toast notifications
   toastContainer: document.getElementById('toast-container'),
   header: document.querySelector('.main-header'),
@@ -211,19 +211,19 @@ async function apiFetch(url, options = {}) {
 function showToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  
+
   let iconClass = 'fa-solid fa-circle-check';
   if (type === 'error') iconClass = 'fa-solid fa-circle-exclamation';
   if (type === 'info') iconClass = 'fa-solid fa-circle-info';
   if (type === 'warning') iconClass = 'fa-solid fa-triangle-exclamation';
-  
+
   toast.innerHTML = `
     <i class="${iconClass}"></i>
     <span>${message}</span>
   `;
-  
+
   DOM.toastContainer.appendChild(toast);
-  
+
   // Slide out and remove toast after 3.5s
   setTimeout(() => {
     toast.style.animation = 'slide-in-toast 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) reverse forwards';
@@ -388,7 +388,7 @@ function initApp() {
   fetchCategories();
   fetchPromotions();
   fetchProducts();
-  
+
   // 5. Check if returning from delivery map page
   checkDeliveryMapReturn();
 
@@ -411,7 +411,7 @@ function initApp() {
 function toggleTheme() {
   const isDark = document.body.classList.toggle('dark-mode');
   localStorage.setItem('fe_dark_mode', isDark);
-  
+
   if (isDark) {
     DOM.themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
     DOM.themeToggle.title = "Chuyển chế độ sáng";
@@ -453,7 +453,7 @@ async function fetchCategories(retryCount = 0) {
     if (!Array.isArray(categories)) {
       throw new Error('Dữ liệu danh mục không hợp lệ');
     }
-    
+
     // Clear default options, keep "All" tab
     DOM.categoryTabsContainer.innerHTML = `
       <button class="category-tab ${currentCategory === 'all' ? 'active' : ''}" data-category-id="all">
@@ -461,7 +461,7 @@ async function fetchCategories(retryCount = 0) {
         <span>Tất Cả Món</span>
       </button>
     `;
-    
+
     // Assign typical food icons based on category name
     const getCategoryIcon = (name) => {
       name = (name || '').toLowerCase();
@@ -477,7 +477,7 @@ async function fetchCategories(retryCount = 0) {
       if (!cat || !cat.DanhMucID) return;
       const activeClass = currentCategory == cat.DanhMucID ? 'active' : '';
       const icon = getCategoryIcon(cat.TenDanhMuc);
-      
+
       DOM.categoryTabsContainer.innerHTML += `
         <button class="category-tab ${activeClass}" data-category-id="${cat.DanhMucID}">
           <span class="tab-icon"><i class="fa-solid ${icon}"></i></span>
@@ -491,16 +491,16 @@ async function fetchCategories(retryCount = 0) {
       tab.addEventListener('click', (e) => {
         const btn = e.currentTarget;
         const catId = btn.getAttribute('data-category-id');
-        
+
         document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
-        
+
         currentCategory = catId;
-        
+
         // Clear search input if switching category
         DOM.searchInput.value = '';
         DOM.searchStatusWrapper.style.display = 'none';
-        
+
         if (catId === 'all') {
           fetchProducts();
         } else {
@@ -527,7 +527,7 @@ async function fetchPromotions() {
     const res = await fetch('/api/khuyenmai');
     if (!res.ok) throw new Error('Cannot fetch promotions');
     const promotions = await res.json();
-    
+
     if (promotions.length === 0) {
       DOM.promotionsContainer.innerHTML = `
         <div class="empty-cart-view" style="grid-column: 1/-1; padding: 20px;">
@@ -539,25 +539,25 @@ async function fetchPromotions() {
     }
 
     DOM.promotionsContainer.innerHTML = '';
-    
+
     const now = new Date();
-    
+
     promotions.forEach(p => {
       const start = new Date(p.NgayBatDau);
       const end = new Date(p.NgayKetThuc);
-      
+
       const isSuspended = !p.TrangThai; // handles false/0/null
       const isExpired = now > end;
       const isNotStarted = now < start;
       const isOutOfStock = p.SoLuong <= 0;
-      
+
       const isDisabled = isSuspended || isExpired || isNotStarted || isOutOfStock;
-      
+
       let statusText = p.MaKhuyenMai;
       let btnClass = 'promo-code-btn';
       let btnAttr = `onclick="copyVoucher(event, '${p.MaKhuyenMai}')"`;
       let btnStyle = '';
-      
+
       if (isDisabled) {
         btnClass += ' disabled';
         btnAttr = 'disabled';
@@ -572,7 +572,7 @@ async function fetchPromotions() {
           statusText = 'Chưa bắt đầu';
         }
       }
-      
+
       let stampHTML = '';
       if (isDisabled) {
         let stampClass = '';
@@ -592,11 +592,11 @@ async function fetchPromotions() {
         }
         stampHTML = `<div class="promo-stamp ${stampClass}">${stampText}</div>`;
       }
-      
+
       const discountText = p.PhanTramGiam > 0 ? `${p.PhanTramGiam}%` : formatPrice(p.SoTienGiam);
       const icon = p.PhanTramGiam > 0 ? 'fa-percent' : 'fa-hand-holding-dollar';
       const condText = p.DieuKienToiThieu > 0 ? `Đơn tối thiểu ${formatPrice(p.DieuKienToiThieu)}` : 'Không giới hạn';
-      
+
       DOM.promotionsContainer.innerHTML += `
         <div class="promotion-card ${isDisabled ? 'disabled' : ''}" data-code="${p.MaKhuyenMai}">
           <div class="promo-left">
@@ -636,11 +636,11 @@ async function fetchPromotions() {
 }
 
 // Copy voucher helper
-window.copyVoucher = function(e, code) {
+window.copyVoucher = function (e, code) {
   e.stopPropagation(); // Avoid card click handler
   navigator.clipboard.writeText(code).then(() => {
     showToast(`Đã sao chép mã "${code}" thành công! 🎉`, "success");
-    
+
     // Automatically pre-fill the coupon code input if the cart is open
     DOM.couponInput.value = code;
   }).catch(() => {
@@ -653,19 +653,19 @@ async function fetchProducts(categoryId = null) {
   try {
     // Show skeletons
     DOM.productsContainer.innerHTML = Array(6).fill('<div class="skeleton-card product-skeleton"></div>').join('');
-    
+
     let url = '/api/sanpham';
     if (categoryId) {
       url = `/api/sanpham/danhmuc/${categoryId}`;
     }
-    
+
     const res = await fetch(url);
     if (!res.ok) throw new Error('Cannot fetch products');
     const responseData = await res.json();
-    
+
     // Handle the dual schema returned by getAllProducts (could be object with .data or raw array)
     const products = Array.isArray(responseData) ? responseData : responseData.data;
-    
+
     renderProductsList(products);
 
   } catch (err) {
@@ -693,11 +693,11 @@ function renderProductsList(products) {
   }
 
   DOM.productsContainer.innerHTML = '';
-  
+
   products.forEach(p => {
     const isOutOfStock = p.SoLuongTon <= 0;
     const isSuspended = p.TrangThai === false || p.TrangThai === 0;
-    
+
     let stockClass = 'tag-instock';
     let stockText = `Còn ${p.SoLuongTon} suất`;
     if (isSuspended) {
@@ -707,13 +707,13 @@ function renderProductsList(products) {
       stockClass = 'tag-outstock';
       stockText = 'Hết hàng';
     }
-    
-    const imgUrl = p.HinhAnh && p.HinhAnh.startsWith('http') 
-      ? p.HinhAnh 
+
+    const imgUrl = p.HinhAnh && p.HinhAnh.startsWith('http')
+      ? p.HinhAnh
       : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
-      
+
     const isFav = favorites.some(fav => fav.SanPhamID === p.SanPhamID);
-    
+
     const pCard = document.createElement('div');
     pCard.className = `product-card ${isOutOfStock || isSuspended ? 'out-of-stock' : ''}`;
     pCard.setAttribute('data-id', p.SanPhamID);
@@ -723,7 +723,7 @@ function renderProductsList(products) {
     const count = parseInt(p.TongDanhGia) || 0;
     let starsHtml = '';
     if (count > 0) {
-      const starIcons = Array.from({length: 5}, (_, i) => {
+      const starIcons = Array.from({ length: 5 }, (_, i) => {
         if (i < Math.floor(avg)) return '<i class="fa-solid fa-star"></i>';
         if (i < avg) return '<i class="fa-solid fa-star-half-stroke"></i>';
         return '<i class="fa-regular fa-star"></i>';
@@ -752,7 +752,7 @@ function renderProductsList(products) {
         </div>
       </div>
     `;
-    
+
     pCard.addEventListener('click', (e) => {
       if (!e.target.closest('.btn-add-cart-simple') && !e.target.closest('.favorite-toggle-btn')) {
         openProductModal(p.SanPhamID);
@@ -774,9 +774,9 @@ function searchProducts(keyword) {
   // Active search feedback
   DOM.searchStatusText.innerHTML = `Đang tìm món ngon chứa: "<strong>${keyword.trim()}</strong>"`;
   DOM.searchStatusWrapper.style.display = 'flex';
-  
+
   DOM.productsContainer.innerHTML = Array(3).fill('<div class="skeleton-card product-skeleton"></div>').join('');
-  
+
   fetch(`/api/sanpham/timkiem?q=${encodeURIComponent(keyword.trim())}`)
     .then(res => {
       if (!res.ok) throw new Error('Search failed');
@@ -805,26 +805,26 @@ async function openProductModal(productId) {
     const res = await fetch(`/api/sanpham/${productId}`);
     if (!res.ok) throw new Error('Cannot fetch product details');
     const product = await res.json();
-    
+
     modalActiveProduct = product;
-    
+
     // Fill dynamic details
-    const imgUrl = product.HinhAnh && product.HinhAnh.startsWith('http') 
-      ? product.HinhAnh 
+    const imgUrl = product.HinhAnh && product.HinhAnh.startsWith('http')
+      ? product.HinhAnh
       : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
-      
+
     DOM.modalProductImg.src = imgUrl;
     DOM.modalProductImg.onerror = () => { DOM.modalProductImg.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600'; };
     DOM.modalProductCategory.textContent = product.TenDanhMuc || 'Thực Phẩm';
     DOM.modalProductTitle.textContent = product.TenSanPham;
-    
+
     // RENDER STARS IN MODAL TITLE
     const starsWrapper = document.getElementById('modal-product-stars-wrapper');
     if (starsWrapper) {
       const avg = parseFloat(product.TrungBinhSao) || 0;
       const count = parseInt(product.TongDanhGia) || 0;
       if (count > 0) {
-        const starIcons = Array.from({length: 5}, (_, i) => {
+        const starIcons = Array.from({ length: 5 }, (_, i) => {
           if (i < Math.floor(avg)) return '<i class="fa-solid fa-star"></i>';
           if (i < avg) return '<i class="fa-solid fa-star-half-stroke"></i>';
           return '<i class="fa-regular fa-star"></i>';
@@ -837,11 +837,11 @@ async function openProductModal(productId) {
 
     DOM.modalProductPrice.textContent = formatPrice(product.Gia);
     DOM.modalProductDesc.textContent = product.MoTa || 'Món ăn ngon, chuẩn sạch vệ sinh chế biến và phục vụ nóng sốt trực tiếp.';
-    
+
     // Stock configuration
     const isOutOfStock = product.SoLuongTon <= 0;
     const isSuspended = product.TrangThai === false || product.TrangThai === 0;
-    
+
     if (isSuspended) {
       DOM.modalProductStockBadge.textContent = 'Tạm Ngưng Bán';
       DOM.modalProductStockBadge.className = 'stock-badge out-of-stock';
@@ -855,11 +855,11 @@ async function openProductModal(productId) {
       DOM.modalProductStockBadge.className = 'stock-badge';
       DOM.modalProductStockNum.textContent = `Còn lại: ${product.SoLuongTon} phần trong kho`;
     }
-    
+
     // Reset quantity selection
     DOM.qtyInput.value = 1;
     DOM.qtyInput.setAttribute('max', product.SoLuongTon);
-    
+
     if (isOutOfStock || isSuspended) {
       DOM.modalAddToCartBtn.setAttribute('disabled', 'true');
       DOM.modalAddToCartBtn.innerHTML = isSuspended ? '<i class="fa-solid fa-ban"></i> Tạm ngưng bán' : '<i class="fa-solid fa-ban"></i> Tạm hết hàng';
@@ -873,7 +873,7 @@ async function openProductModal(productId) {
       DOM.qtyMinusBtn.removeAttribute('disabled');
       DOM.qtyPlusBtn.removeAttribute('disabled');
     }
-    
+
     // Open modal overlay
     DOM.productModal.classList.add('open');
     document.body.style.overflow = 'hidden'; // Stop scroll bleed
@@ -881,17 +881,17 @@ async function openProductModal(productId) {
     // Fetch and render reviews list
     const reviewsContainer = document.getElementById('modal-product-reviews-container');
     const reviewsCountSpan = document.getElementById('modal-product-reviews-count');
-    
+
     if (reviewsContainer && reviewsCountSpan) {
       reviewsContainer.innerHTML = `<div style="text-align: center; padding: 10px; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải đánh giá...</div>`;
       reviewsCountSpan.textContent = '0';
-      
+
       try {
         const reviewsRes = await fetch(`/api/danhgia/sanpham/${productId}`);
         if (reviewsRes.ok) {
           const reviews = await reviewsRes.json();
           reviewsCountSpan.textContent = reviews.length;
-          
+
           if (reviews.length === 0) {
             reviewsContainer.innerHTML = `
               <div style="text-align: center; padding: 20px 10px; color: var(--text-muted); font-size: 13px;">
@@ -908,14 +908,14 @@ async function openProductModal(productId) {
                 month: '2-digit',
                 year: 'numeric'
               });
-              
-              const starIcons = Array.from({length: 5}, (_, i) => {
+
+              const starIcons = Array.from({ length: 5 }, (_, i) => {
                 if (i < rev.SoSao) return '<i class="fa-solid fa-star"></i>';
                 return '<i class="fa-regular fa-star"></i>';
               }).join('');
-              
+
               const commentText = rev.BinhLuan || 'Khách hàng không để lại bình luận.';
-              
+
               reviewsContainer.innerHTML += `
                 <div class="user-review-row">
                   <div class="user-review-header">
@@ -981,17 +981,17 @@ DOM.qtyInput.addEventListener('change', () => {
 DOM.modalAddToCartBtn.addEventListener('click', () => {
   if (!modalActiveProduct) return;
   const qty = parseInt(DOM.qtyInput.value) || 1;
-  
-  const imgUrl = modalActiveProduct.HinhAnh && modalActiveProduct.HinhAnh.startsWith('http') 
-    ? modalActiveProduct.HinhAnh 
+
+  const imgUrl = modalActiveProduct.HinhAnh && modalActiveProduct.HinhAnh.startsWith('http')
+    ? modalActiveProduct.HinhAnh
     : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
-    
+
   addToCart(modalActiveProduct.SanPhamID, modalActiveProduct.TenSanPham, modalActiveProduct.Gia, imgUrl, modalActiveProduct.SoLuongTon, qty);
   closeProductModal();
 });
 
 // Quick Add to Cart from cards list
-window.quickAddToCart = function(e, id, name, price, img, maxStock, isSuspended) {
+window.quickAddToCart = function (e, id, name, price, img, maxStock, isSuspended) {
   e.stopPropagation(); // Stop card click trigger
   if (isSuspended) {
     showToast(`Món ăn "${name}" đang tạm ngưng bán!`, 'error');
@@ -1005,16 +1005,16 @@ window.quickAddToCart = function(e, id, name, price, img, maxStock, isSuspended)
 };
 
 // Toggle Favorite logic
-window.toggleFavorite = async function(e, id, productObj) {
+window.toggleFavorite = async function (e, id, productObj) {
   e.stopPropagation();
   const existingIdx = favorites.findIndex(fav => fav.SanPhamID === id);
   const btn = e.currentTarget;
-  
+
   if (existingIdx > -1) {
     favorites.splice(existingIdx, 1);
     btn.classList.remove('active');
     showToast(`Đã bỏ thích món "${productObj.TenSanPham}" 💔`, 'info');
-    
+
     if (currentUser && currentToken) {
       try {
         await fetch(`/api/yeuthich/${id}`, {
@@ -1029,7 +1029,7 @@ window.toggleFavorite = async function(e, id, productObj) {
     favorites.push(productObj);
     btn.classList.add('active');
     showToast(`Đã thêm "${productObj.TenSanPham}" vào yêu thích! 💖`, 'success');
-    
+
     if (currentUser && currentToken) {
       try {
         await fetch('/api/yeuthich', {
@@ -1045,7 +1045,7 @@ window.toggleFavorite = async function(e, id, productObj) {
       }
     }
   }
-  
+
   localStorage.setItem('fe_favorites', JSON.stringify(favorites));
 };
 
@@ -1102,7 +1102,7 @@ async function addToCart(id, name, price, image, stock, qty = 1) {
 function updateCartBadge() {
   const totalItemsCount = cart.reduce((total, item) => total + item.qty, 0);
   DOM.cartCountBadge.textContent = totalItemsCount;
-  
+
   if (totalItemsCount > 0) {
     DOM.cartCountBadge.style.display = 'flex';
   } else {
@@ -1140,7 +1140,7 @@ function renderCart() {
 
   DOM.cartFooter.style.display = 'block';
   DOM.cartItemsContainer.innerHTML = '';
-  
+
   cart.forEach(item => {
     const itemCard = document.createElement('div');
     itemCard.className = `cart-item${item.suspended ? ' cart-item-suspended' : ''}`;
@@ -1168,7 +1168,7 @@ function renderCart() {
 }
 
 // Delete Item from Cart (Hybrid: xóa localStorage + DB sync khi đăng nhập)
-window.deleteCartItem = async function(id) {
+window.deleteCartItem = async function (id) {
   const item = cart.find(i => i.id === id);
   cart = cart.filter(i => i.id !== id);
   localStorage.setItem('fe_cart', JSON.stringify(cart));
@@ -1213,7 +1213,7 @@ window.deleteCartItem = async function(id) {
 };
 
 // Update Item Quantity inside Drawer (Hybrid: cập nhật localStorage + DB sync)
-window.updateCartItemQty = async function(id, direction) {
+window.updateCartItemQty = async function (id, direction) {
   const itemIndex = cart.findIndex(item => item.id === id);
   if (itemIndex === -1) return;
 
@@ -1340,7 +1340,7 @@ async function syncFavoritesFromDB() {
       const dbFavorites = await res.json();
       favorites = dbFavorites;
       localStorage.setItem('fe_favorites', JSON.stringify(favorites));
-      
+
       // Cập nhật lại UI hiển thị sản phẩm trên trang chủ
       if (typeof fetchProducts === 'function') {
         const cat = currentCategory === 'all' ? null : currentCategory;
@@ -1356,16 +1356,16 @@ async function syncFavoritesFromDB() {
 function calculateCartSummary() {
   const subtotal = cart.reduce((total, item) => total + (item.price * item.qty), 0);
   DOM.cartSubtotal.textContent = formatPrice(subtotal);
-  
+
   let discount = 0;
-  
+
   if (appliedCoupon) {
     DOM.appliedCouponStatus.style.display = 'flex';
     DOM.couponInput.style.display = 'none';
     DOM.applyCouponBtn.style.display = 'none';
-    
+
     DOM.couponTagName.textContent = appliedCoupon.code;
-    
+
     // Check minimum condition
     if (subtotal < appliedCoupon.minVal) {
       discount = 0;
@@ -1403,11 +1403,11 @@ DOM.applyCouponBtn.addEventListener('click', async () => {
   }
 
   const subtotal = cart.reduce((total, item) => total + (item.price * item.qty), 0);
-  
+
   try {
     DOM.applyCouponBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
     DOM.applyCouponBtn.setAttribute('disabled', 'true');
-    
+
     const res = await fetch('/api/khuyenmai/ap-dung', {
       method: 'POST',
       headers: {
@@ -1420,7 +1420,7 @@ DOM.applyCouponBtn.addEventListener('click', async () => {
     });
 
     const result = await res.json();
-    
+
     if (res.status === 200) {
       // Promotion validated successfully!
       const km = result.data;
@@ -1431,7 +1431,7 @@ DOM.applyCouponBtn.addEventListener('click', async () => {
         minVal: km.DieuKienToiThieu,
         id: km.KhuyenMaiID
       };
-      
+
       localStorage.setItem('fe_coupon', JSON.stringify(appliedCoupon));
       DOM.couponInput.value = '';
       calculateCartSummary();
@@ -1523,7 +1523,7 @@ DOM.checkoutBtn.addEventListener('click', () => {
  * Điều hướng sang trang bản đồ để chọn địa chỉ nhận hàng
  * Lưu lại thông tin đang nhập dở của khách hàng để khôi phục khi quay lại
  */
-window.openDeliveryMap = function() {
+window.openDeliveryMap = function () {
   if (DOM.checkoutPhone.value) {
     sessionStorage.setItem('fe_checkout_temp_phone', DOM.checkoutPhone.value.trim());
   }
@@ -1546,10 +1546,10 @@ function checkDeliveryMapReturn() {
     // Chỉ tự động mở khi đã đăng nhập và giỏ hàng có đồ
     if (currentUser && cart.length > 0) {
       DOM.checkoutAddress.value = mapAddress;
-      
+
       const tempPhone = sessionStorage.getItem('fe_checkout_temp_phone');
       if (tempPhone) DOM.checkoutPhone.value = tempPhone;
-      
+
       const tempNote = sessionStorage.getItem('fe_checkout_temp_note');
       const mapNote = sessionStorage.getItem('fe_delivery_note');
       if (mapNote) {
@@ -1557,7 +1557,7 @@ function checkDeliveryMapReturn() {
       } else if (tempNote) {
         DOM.checkoutNote.value = tempNote;
       }
-      
+
       const tempPayment = sessionStorage.getItem('fe_checkout_temp_payment');
       if (tempPayment) {
         DOM.checkoutPayment.value = tempPayment;
@@ -1567,7 +1567,7 @@ function checkDeliveryMapReturn() {
         DOM.panelMomo.style.display = tempPayment === 'Ví MoMo' ? 'block' : 'none';
         DOM.panelBank.style.display = tempPayment === 'Chuyển khoản ngân hàng' ? 'block' : 'none';
       }
-      
+
       // Tính toán giá trị hiển thị tóm tắt
       const subtotal = cart.reduce((total, item) => total + (item.price * item.qty), 0);
       const shipping = 15000;
@@ -1875,10 +1875,10 @@ DOM.tabRegisterBtn.addEventListener('click', () => {
 // Login Form Submit (POST /api/login)
 DOM.loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const username = document.getElementById('login-username').value.trim();
   const password = document.getElementById('login-password').value.trim();
-  
+
   try {
     const submitBtn = DOM.loginForm.querySelector('button[type="submit"]');
     submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Đang xác thực...';
@@ -1896,7 +1896,7 @@ DOM.loginForm.addEventListener('submit', async (e) => {
     });
 
     const data = await res.json();
-    
+
     if (res.status === 200) {
       currentUser = data.user;
       currentToken = data.token;
@@ -1929,18 +1929,18 @@ DOM.loginForm.addEventListener('submit', async (e) => {
 // Register Form Submit (POST /api/register)
 DOM.registerForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const username = document.getElementById('reg-username').value.trim();
   const fullname = document.getElementById('reg-fullname').value.trim();
   const email = document.getElementById('reg-email').value.trim();
   const phone = document.getElementById('reg-phone').value.trim();
   const password = document.getElementById('reg-password').value.trim();
-  
+
   if (password.length < 6) {
     showToast('Mật khẩu bảo mật phải chứa ít nhất 6 ký tự!', 'warning');
     return;
   }
-  
+
   try {
     const submitBtn = DOM.registerForm.querySelector('button[type="submit"]');
     submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo tài khoản...';
@@ -1963,10 +1963,10 @@ DOM.registerForm.addEventListener('submit', async (e) => {
     });
 
     const data = await res.json();
-    
+
     if (res.status === 201 || res.status === 200) {
       showToast('Đăng ký tài khoản thành công! Đang tự động đăng nhập...', 'success');
-      
+
       // Auto submit login
       document.getElementById('login-username').value = username;
       document.getElementById('login-password').value = password;
@@ -1993,7 +1993,7 @@ function updateUserUI() {
     DOM.loginBtn.style.display = 'none';
     DOM.profileDropdown.style.display = 'block';
     DOM.usernameDisplay.textContent = currentUser.HoTen.split(' ').pop(); // Just take the last name
-    
+
     // Hiển thị nút admin nếu là Admin (VaiTroID === 1)
     const adminBtn = document.getElementById('menu-admin-btn');
     if (adminBtn) {
@@ -2050,7 +2050,7 @@ function openOrdersModal() {
     DOM.authModal.classList.add('open');
     return;
   }
-  
+
   // Reset active filter tab to all
   currentOrderFilter = 'all';
   document.querySelectorAll('.orders-filter-tab').forEach(btn => {
@@ -2063,7 +2063,7 @@ function openOrdersModal() {
   // Open modal overlay
   DOM.ordersModal.classList.add('open');
   document.body.style.overflow = 'hidden';
-  
+
   // Fetch orders
   fetchOrders();
 }
@@ -2093,10 +2093,10 @@ async function fetchOrders() {
     }
 
     const data = await res.json();
-    
+
     // Handle database output format
     userOrders = Array.isArray(data) ? data : (data.data || []);
-    
+
     // Sort orders by date descending
     userOrders.sort((a, b) => new Date(b.NgayDat) - new Date(a.NgayDat));
 
@@ -2235,7 +2235,7 @@ function renderOrders(orders) {
     const cardHeader = orderCard.querySelector('.order-item-header');
     cardHeader.addEventListener('click', (e) => {
       const isExpanded = orderCard.classList.toggle('expanded');
-      
+
       if (isExpanded) {
         // Load details dynamically
         loadOrderDetails(order.HoaDonID);
@@ -2271,9 +2271,9 @@ async function loadOrderDetails(orderId) {
         // Map trạng thái sang class CSS và icon
         const statusMap = {
           'Chờ xác nhận': { cls: 'cho-xac-nhan', icon: 'fa-regular fa-clock' },
-          'Đang giao':    { cls: 'dang-giao',    icon: 'fa-solid fa-truck-fast' },
-          'Hoàn thành':  { cls: 'hoan-thanh',   icon: 'fa-regular fa-circle-check' },
-          'Đã hủy':      { cls: 'da-huy',       icon: 'fa-regular fa-circle-xmark' }
+          'Đang giao': { cls: 'dang-giao', icon: 'fa-solid fa-truck-fast' },
+          'Hoàn thành': { cls: 'hoan-thanh', icon: 'fa-regular fa-circle-check' },
+          'Đã hủy': { cls: 'da-huy', icon: 'fa-regular fa-circle-xmark' }
         };
         const s = statusMap[details.TrangThai] || { cls: 'cho-xac-nhan', icon: 'fa-regular fa-clock' };
         badge.className = `status-badge ${s.cls}`;
@@ -2587,10 +2587,10 @@ async function cancelOrder(orderId) {
 
     if (res.status === 200) {
       showToast(`Hủy đơn hàng #HD${orderId} thành công! 🗑️`, 'success');
-      
+
       // Reload order list
       fetchOrders();
-      
+
       // Reload products list in background to update inventory/stocks
       fetchProducts();
     } else {
@@ -2623,7 +2623,7 @@ function openProfileModal() {
   DOM.profileEmail.value = currentUser.Email || '';
   DOM.profilePhone.value = currentUser.SoDienThoai || '';
   DOM.profileAddress.value = currentUser.DiaChi || '';
-  
+
   // Set role badge
   if (currentUser.VaiTroID === 1) {
     DOM.profileRoleBadge.textContent = 'Quản trị viên';
@@ -2717,10 +2717,10 @@ DOM.profileForm.addEventListener('submit', async (e) => {
       // Sync update user state
       currentUser = result.data;
       localStorage.setItem('fe_user', JSON.stringify(currentUser));
-      
+
       // Update UI displays
       updateUserUI();
-      
+
       showToast('Cập nhật thông tin tài khoản thành công! 👤', 'success');
       closeProfileModal();
     } else {
@@ -2759,7 +2759,7 @@ document.querySelectorAll('.pwd-toggle-btn').forEach(btn => {
 function setupEventListeners() {
   // Theme Action
   DOM.themeToggle.addEventListener('click', toggleTheme);
-  
+
   // Close modal clicks on overlay backgrounds
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
@@ -2769,7 +2769,7 @@ function setupEventListeners() {
       }
     });
   });
-  
+
   DOM.productModalClose.addEventListener('click', closeProductModal);
   DOM.profileModalClose.addEventListener('click', closeProfileModal);
   DOM.ordersModalClose.addEventListener('click', closeOrdersModal);
@@ -2797,7 +2797,7 @@ function setupEventListeners() {
   DOM.searchInput.addEventListener('input', (e) => {
     clearTimeout(searchDebounceTimer);
     const text = e.target.value;
-    
+
     searchDebounceTimer = setTimeout(() => {
       searchProducts(text);
     }, 450); // 450ms debounce
