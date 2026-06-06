@@ -1064,15 +1064,15 @@ async function loadProductsData() {
     if (cache.categories.length === 0) {
       const cats = await apiCall('/api/danhmuc');
       cache.categories = cats;
-      
-      // Load into Category selector
-      DOM.productCategoryFilter.innerHTML = '<option value="all">Tất cả danh mục</option>';
-      DOM.productCategory.innerHTML = '';
-      cats.forEach(c => {
-        DOM.productCategoryFilter.innerHTML += `<option value="${c.DanhMucID}">${c.TenDanhMuc}</option>`;
-        DOM.productCategory.innerHTML += `<option value="${c.DanhMucID}">${c.TenDanhMuc}</option>`;
-      });
     }
+    
+    // Always populate the dropdown elements to ensure they are sync'd with cache
+    DOM.productCategoryFilter.innerHTML = '<option value="all">Tất cả danh mục</option>';
+    DOM.productCategory.innerHTML = '';
+    cache.categories.forEach(c => {
+      DOM.productCategoryFilter.innerHTML += `<option value="${c.DanhMucID}">${c.TenDanhMuc}</option>`;
+      DOM.productCategory.innerHTML += `<option value="${c.DanhMucID}">${c.TenDanhMuc}</option>`;
+    });
     
     renderProducts();
   } catch (err) {
