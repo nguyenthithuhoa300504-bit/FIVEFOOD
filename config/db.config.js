@@ -28,7 +28,7 @@ async function connectDB() {
     console.error('Kết nối cơ sở dữ liệu MS SQL Server thất bại!');
     console.error('Chi tiết lỗi:', error.message);
     console.error('--------------------------------------------------');
-    process.exit(1); // Dừng ứng dụng nếu không kết nối được database
+    process.exit(1); // Dừng lại ứng dụng nếu không kết nối được database
   }
 }
 
