@@ -27,6 +27,7 @@ const DOM = {
 
   // Auth
   loginBtn: document.getElementById('login-btn'),
+  mobileLoginBtn: document.getElementById('mobile-login-btn'),
   profileDropdown: document.getElementById('profile-dropdown'),
   profileTrigger: document.getElementById('profile-trigger'),
   usernameDisplay: document.getElementById('username-display'),
@@ -42,6 +43,8 @@ const DOM = {
   // Search
   searchInput: document.getElementById('search-input'),
   searchBtn: document.getElementById('search-btn'),
+  mobileSearchInput: document.getElementById('mobile-search-input'),
+  mobileSearchBtn: document.getElementById('mobile-search-btn'),
   searchStatusWrapper: document.getElementById('search-status-wrapper'),
   searchStatusText: document.getElementById('search-status-text'),
   clearSearchBtn: document.getElementById('clear-search-btn'),
@@ -68,6 +71,7 @@ const DOM = {
 
   // Cart
   cartBtn: document.getElementById('cart-btn'),
+  mobileCartBtn: document.getElementById('mobile-cart-btn'),
   cartCountBadge: document.getElementById('cart-count'),
   cartModal: document.getElementById('cart-modal'),
   cartModalClose: document.getElementById('cart-modal-close'),
@@ -89,6 +93,9 @@ const DOM = {
   // Toast notifications
   toastContainer: document.getElementById('toast-container'),
   header: document.querySelector('.main-header'),
+  mobileMenuToggle: document.getElementById('mobile-menu-toggle'),
+  mobileNavPanel: document.getElementById('mobile-nav-panel'),
+  mobileThemeToggle: document.getElementById('mobile-theme-toggle'),
 
   // Profile Modal
   profileModal: document.getElementById('profile-modal'),
@@ -2759,6 +2766,10 @@ document.querySelectorAll('.pwd-toggle-btn').forEach(btn => {
 function setupEventListeners() {
   // Theme Action
   DOM.themeToggle.addEventListener('click', toggleTheme);
+  DOM.mobileThemeToggle?.addEventListener('click', () => {
+    toggleTheme();
+    closeMobileMenu();
+  });
 
   // Close modal clicks on overlay backgrounds
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
@@ -2807,9 +2818,60 @@ function setupEventListeners() {
     searchProducts(DOM.searchInput.value);
   });
 
+  DOM.mobileSearchBtn?.addEventListener('click', () => {
+    searchProducts(DOM.mobileSearchInput.value);
+    closeMobileMenu();
+  });
+
+  DOM.mobileSearchInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      searchProducts(DOM.mobileSearchInput.value);
+      closeMobileMenu();
+    }
+  });
+
   DOM.clearSearchBtn.addEventListener('click', () => {
     DOM.searchInput.value = '';
     DOM.searchStatusWrapper.style.display = 'none';
     fetchProducts(currentCategory === 'all' ? null : currentCategory);
   });
+
+  // Mobile menu toggle
+  DOM.mobileMenuToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMobileMenu();
+  });
+
+  DOM.mobileCartBtn?.addEventListener('click', () => {
+    DOM.cartBtn.click();
+    closeMobileMenu();
+  });
+
+  DOM.mobileLoginBtn?.addEventListener('click', () => {
+    DOM.authModal.classList.add('open');
+    closeMobileMenu();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!DOM.mobileNavPanel?.contains(e.target) && !DOM.mobileMenuToggle?.contains(e.target)) {
+      closeMobileMenu();
+    }
+  });
+}
+
+function toggleMobileMenu() {
+  const panel = DOM.mobileNavPanel;
+  const toggle = DOM.mobileMenuToggle;
+  if (!panel || !toggle) return;
+
+  const isOpen = panel.classList.toggle('open');
+  toggle.setAttribute('aria-expanded', String(isOpen));
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+
+function closeMobileMenu() {
+  DOM.mobileNavPanel?.classList.remove('open');
+  DOM.mobileMenuToggle?.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
 }

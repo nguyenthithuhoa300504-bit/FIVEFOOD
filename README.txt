@@ -29,7 +29,7 @@ BƯỚC 2: CẤU HÌNH CƠ SỞ DỮ LIỆU (DATABASE & ENV)
    - Nhấn F5 (hoặc nút Execute) để chạy tạo procedure 'sp_KiemTraDangNhap'.
 
 ------------------------------------------------------------------------
-BƯỚC 3: KHỞI CHẠY SERVER DỰ ÁN update 15/06/2026
+BƯỚC 3: KHỞI CHẠY SERVER DỰ ÁN
 ------------------------------------------------------------------------
 Để khởi chạy Server, hãy chạy một trong hai câu lệnh sau tại terminal:
 

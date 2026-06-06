@@ -17,9 +17,11 @@ let modalActiveProduct = null;
 const DOM = {
   // Theme
   themeToggle: document.getElementById('theme-toggle'),
+  mobileThemeToggle: document.getElementById('mobile-theme-toggle'),
 
   // Auth
   loginBtn: document.getElementById('login-btn'),
+  mobileLoginBtn: document.getElementById('mobile-login-btn'),
   profileDropdown: document.getElementById('profile-dropdown'),
   profileTrigger: document.getElementById('profile-trigger'),
   usernameDisplay: document.getElementById('username-display'),
@@ -35,6 +37,8 @@ const DOM = {
   // Search
   searchInput: document.getElementById('search-input'),
   searchBtn: document.getElementById('search-btn'),
+  mobileSearchInput: document.getElementById('mobile-search-input'),
+  mobileSearchBtn: document.getElementById('mobile-search-btn'),
 
   // Containers
   historyContainer: document.getElementById('history-products-container'),
@@ -57,6 +61,7 @@ const DOM = {
 
   // Cart
   cartBtn: document.getElementById('cart-btn'),
+  mobileCartBtn: document.getElementById('mobile-cart-btn'),
   cartCountBadge: document.getElementById('cart-count'),
   cartModal: document.getElementById('cart-modal'),
   cartModalClose: document.getElementById('cart-modal-close'),
@@ -98,6 +103,8 @@ const DOM = {
 
   // Toast notifications
   toastContainer: document.getElementById('toast-container'),
+  mobileMenuToggle: document.getElementById('mobile-menu-toggle'),
+  mobileNavPanel: document.getElementById('mobile-nav-panel'),
 };
 
 // ==================== UTILITY FUNCTIONS ====================
@@ -1287,10 +1294,43 @@ async function fetchOrdersHistory() {
 
 function setupEventListeners() {
   DOM.themeToggle.addEventListener('click', toggleTheme);
+  DOM.mobileThemeToggle?.addEventListener('click', () => {
+    toggleTheme();
+    closeMobileMenu();
+  });
 
   DOM.productModalClose.addEventListener('click', closeProductModal);
   DOM.productModal.addEventListener('click', (e) => {
     if (e.target === DOM.productModal) closeProductModal();
+  });
+
+  DOM.mobileSearchBtn?.addEventListener('click', () => {
+    const term = DOM.mobileSearchInput?.value.trim() || '';
+    if (term) {
+      window.location.href = `index.html?search=${encodeURIComponent(term)}`;
+    }
+    closeMobileMenu();
+  });
+
+  DOM.mobileCartBtn?.addEventListener('click', () => {
+    DOM.cartBtn.click();
+    closeMobileMenu();
+  });
+
+  DOM.mobileLoginBtn?.addEventListener('click', () => {
+    DOM.authModal.classList.add('open');
+    closeMobileMenu();
+  });
+
+  DOM.mobileMenuToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMobileMenu();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!DOM.mobileNavPanel?.contains(e.target) && !DOM.mobileMenuToggle?.contains(e.target)) {
+      closeMobileMenu();
+    }
   });
 
   // Tabs click
@@ -1299,4 +1339,19 @@ function setupEventListeners() {
       switchTab(btn.getAttribute('data-tab'));
     });
   });
+}
+
+function toggleMobileMenu() {
+  const panel = DOM.mobileNavPanel;
+  const toggle = DOM.mobileMenuToggle;
+  if (!panel || !toggle) return;
+  const isOpen = panel.classList.toggle('open');
+  toggle.setAttribute('aria-expanded', String(isOpen));
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+
+function closeMobileMenu() {
+  DOM.mobileNavPanel?.classList.remove('open');
+  DOM.mobileMenuToggle?.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
 }

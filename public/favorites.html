@@ -214,6 +214,11 @@
         <button id="search-btn" class="btn btn-search">Tìm kiếm</button>
       </div>
 
+      <!-- Nút mở menu mobile: giữ logo + profile dropdown, đưa phần còn lại vào panel -->
+      <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Mở menu di động" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
       <!-- Navigation Actions -->
       <div class="header-actions">
         <!-- Theme Toggle -->
@@ -257,6 +262,18 @@
           </div>
         </div>
       </div>
+
+      <!-- Mobile slide panel: chứa các action bị ẩn trên màn hình nhỏ -->
+      <nav id="mobile-nav-panel" class="mobile-nav-panel" aria-label="Menu di động">
+        <div class="mobile-nav-search">
+          <input type="text" id="mobile-search-input" placeholder="Tìm món nhanh trên điện thoại...">
+          <button id="mobile-search-btn" class="btn btn-search btn-sm">Tìm</button>
+        </div>
+        <button id="mobile-theme-toggle" class="mobile-nav-btn"><i class="fa-solid fa-moon"></i> Chế độ tối</button>
+        <a href="favorites.html" class="mobile-nav-btn"><i class="fa-solid fa-heart"></i> Món yêu thích</a>
+        <button id="mobile-cart-btn" class="mobile-nav-btn"><i class="fa-solid fa-bag-shopping"></i> Giỏ hàng</button>
+        <button id="mobile-login-btn" class="mobile-nav-btn btn btn-primary"><i class="fa-solid fa-user-astronaut"></i> Đăng nhập</button>
+      </nav>
     </div>
   </header>
 
