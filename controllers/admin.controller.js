@@ -146,8 +146,6 @@ const getTopSanPhamBanChay = async (req, res) => {
  */
 const getBieuDo = async (req, res) => {
   try {
-    const request = new sql.Request();
-    
     // a. Doanh thu & số đơn hàng theo tháng (6 tháng gần nhất)
     const queryDoanhThu = `
       SELECT 
@@ -171,7 +169,7 @@ const getBieuDo = async (req, res) => {
       GROUP BY TrangThai
     `;
     
-    // c. Doanh thu theo danh mục sản phẩm (chỉ tính đơn hoàn thành/đã thanh toán)
+    // c. Doanh thu theo danh mục sản phẩm
     const queryDanhMuc = `
       SELECT 
         dm.TenDanhMuc,
@@ -186,15 +184,16 @@ const getBieuDo = async (req, res) => {
       GROUP BY dm.TenDanhMuc
     `;
     
+    // Mỗi query phải dùng một Request object RIÊNG BIỆT (mssql không cho phép reuse)
     const [resDoanhThu, resTrangThai, resDanhMuc] = await Promise.all([
-      request.query(queryDoanhThu),
-      request.query(queryTrangThai),
-      request.query(queryDanhMuc)
+      new sql.Request().query(queryDoanhThu),
+      new sql.Request().query(queryTrangThai),
+      new sql.Request().query(queryDanhMuc)
     ]);
     
     return res.status(200).json({
       doanhThuThang: resDoanhThu.recordset,
-      trangThaiDon: resTrangThai.recordset,
+      trangThaiDon:  resTrangThai.recordset,
       doanhThuDanhMuc: resDanhMuc.recordset
     });
   } catch (error) {

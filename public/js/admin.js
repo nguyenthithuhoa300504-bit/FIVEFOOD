@@ -485,66 +485,76 @@ async function loadDashboardData() {
   try {
     // Skeletons
     DOM.topProductsTbody.innerHTML = Array(3).fill('<tr><td colspan="4"><i class="fa-solid fa-circle-notch fa-spin"></i> Đang tải danh sách bán chạy...</td></tr>').join('');
-    
-    // Call Dashboard APIs
-    const thongKePromise = apiCall('/api/admin/thongke');
-    const doanhThuPromise = apiCall('/api/admin/doanhthu');
-    const topProductsPromise = apiCall('/api/admin/sanphambanchay');
-    const bieuDoPromise = apiCall('/api/admin/bieudo');
-    
-    const [thongKe, doanhThu, topProducts, bieuDo] = await Promise.all([
-      thongKePromise, 
-      doanhThuPromise, 
-      topProductsPromise,
-      bieuDoPromise
+
+    // ── Bước 1: Tải các API thống kê chính (bắt buộc thành công) ──
+    const [thongKe, doanhThu, topProducts] = await Promise.all([
+      apiCall('/api/admin/thongke'),
+      apiCall('/api/admin/doanhthu'),
+      apiCall('/api/admin/sanphambanchay')
     ]);
-    
-    // Populate stats
+
+    // Populate stat cards
     DOM.statRevenue.textContent = formatPrice(doanhThu.TongDoanhThu || 0);
-    DOM.statOrders.textContent = thongKe.TongHoaDon || 0;
-    DOM.statProducts.textContent = thongKe.TongSanPham || 0;
-    DOM.statUsers.textContent = thongKe.TongNguoiDung || 0;
-    
-    // Cache chart data
-    cache.chartData = bieuDo;
-    
-    // Render charts
-    renderDashboardCharts(bieuDo);
-    
+    DOM.statOrders.textContent   = thongKe.TongHoaDon    || 0;
+    DOM.statProducts.textContent = thongKe.TongSanPham   || 0;
+    DOM.statUsers.textContent    = thongKe.TongNguoiDung || 0;
+
     // Top 5 products rendering
     DOM.topProductsTbody.innerHTML = '';
     if (!topProducts || topProducts.length === 0) {
-      DOM.topProductsTbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Chưa có món ăn nào bán ra.</td></tr>';
-      return;
+      DOM.topProductsTbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Chưa có món ăn nào bán ra.</td></tr>';
+    } else {
+      topProducts.forEach(p => {
+        const imgUrl = p.HinhAnh && p.HinhAnh.startsWith('http')
+          ? p.HinhAnh
+          : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100';
+        DOM.topProductsTbody.innerHTML += `
+          <tr>
+            <td>
+              <div class="table-img-wrapper">
+                <img src="${imgUrl}" alt="${p.TenSanPham}" class="table-img"
+                     onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100';">
+              </div>
+            </td>
+            <td>
+              <div class="product-table-name">${p.TenSanPham}</div>
+              <div class="product-table-desc">Mã món: #${p.SanPhamID}</div>
+            </td>
+            <td style="font-weight:600;">${formatPrice(p.Gia)}</td>
+            <td>
+              <span class="badge badge-completed" style="font-size:0.85rem;">
+                <i class="fa-solid fa-fire"></i> Đã bán ${p.TongSoLuongDaBan} phần
+              </span>
+            </td>
+          </tr>`;
+      });
     }
-    
-    topProducts.forEach(p => {
-      const imgUrl = p.HinhAnh && p.HinhAnh.startsWith('http') 
-        ? p.HinhAnh 
-        : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100';
-        
-      DOM.topProductsTbody.innerHTML += `
-        <tr>
-          <td>
-            <div class="table-img-wrapper">
-              <img src="${imgUrl}" alt="${p.TenSanPham}" class="table-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100';">
-            </div>
-          </td>
-          <td>
-            <div class="product-table-name">${p.TenSanPham}</div>
-            <div class="product-table-desc">Mã món: #${p.SanPhamID}</div>
-          </td>
-          <td style="font-weight: 600;">${formatPrice(p.Gia)}</td>
-          <td>
-            <span class="badge badge-completed" style="font-size: 0.85rem;"><i class="fa-solid fa-fire"></i> Đã bán ${p.TongSoLuongDaBan} phần</span>
-          </td>
-        </tr>
-      `;
-    });
-    
+
   } catch (err) {
     console.error('Lỗi tải dữ liệu Dashboard:', err);
     showToast('Lỗi hệ thống khi tải thống kê tổng quan!', 'error');
+  }
+
+  // ── Bước 2: Tải dữ liệu biểu đồ riêng biệt (KHÔNG làm hỏng stats nếu lỗi) ──
+  try {
+    const bieuDo = await apiCall('/api/admin/bieudo');
+    cache.chartData = bieuDo;
+    renderDashboardCharts(bieuDo);
+  } catch (chartErr) {
+    console.warn('Không thể tải dữ liệu biểu đồ (có thể chưa có đơn hàng thanh toán):', chartErr.message);
+    // Hiển thị thông báo trống thay vì lỗi toàn trang
+    ['revenue-chart', 'order-status-chart', 'category-chart'].forEach(id => {
+      const canvas = document.getElementById(id);
+      if (canvas) {
+        const parent = canvas.parentElement;
+        parent.innerHTML = `
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
+                      height:100%;color:var(--text-muted);gap:8px;font-size:0.9rem;">
+            <i class="fa-solid fa-chart-simple" style="font-size:2rem;opacity:0.3;"></i>
+            <span>Chưa có dữ liệu để hiển thị biểu đồ</span>
+          </div>`;
+      }
+    });
   }
 }
 
