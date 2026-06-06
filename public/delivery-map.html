@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodExpress - Chọn Địa Chỉ Giao Hàng</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Leaflet Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="css/delivery-map.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="dm-header">
+    <div class="dm-header-inner">
+      <button class="back-btn" id="back-btn" onclick="goBack()">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <div class="dm-logo">
+        <span class="dm-logo-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
+        <span class="dm-logo-text">Food<span>Express</span></span>
+      </div>
+      <div class="dm-header-title">
+        <h1>Chọn Địa Chỉ Giao Hàng</h1>
+        <p>Nhấn bản đồ, tìm kiếm hoặc dùng GPS</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <div class="dm-layout">
+
+    <!-- LEFT PANEL -->
+    <aside class="dm-panel">
+
+      <!-- Step indicator -->
+      <div class="step-indicator">
+        <div class="step-item active" id="step-1">
+          <div class="step-num">1</div>
+          <span>Chọn vị trí</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" id="step-2">
+          <div class="step-num">2</div>
+          <span>Xác nhận</span>
+        </div>
+      </div>
+
+      <!-- Search box -->
+      <div class="panel-section">
+        <label class="panel-label"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm địa chỉ</label>
+        <div class="search-box-wrapper">
+          <input type="text" id="address-search" class="address-input" placeholder="Nhập tên đường, quận, thành phố..." autocomplete="off">
+          <button class="search-clear-btn" id="search-clear" style="display:none" onclick="clearSearch()">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <!-- Autocomplete dropdown -->
+        <div class="autocomplete-dropdown" id="autocomplete-list"></div>
+      </div>
+
+      <!-- GPS Button -->
+      <div class="panel-section">
+        <button class="gps-btn" id="gps-btn" onclick="useGPS()">
+          <div class="gps-icon-wrapper" id="gps-icon-wrapper">
+            <i class="fa-solid fa-location-crosshairs"></i>
+          </div>
+          <div class="gps-text">
+            <span class="gps-title">Dùng vị trí hiện tại (GPS)</span>
+            <span class="gps-desc">Tự động định vị chính xác của bạn</span>
+          </div>
+          <i class="fa-solid fa-chevron-right gps-arrow"></i>
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="panel-divider"><span>hoặc nhấn trực tiếp lên bản đồ</span></div>
+
+      <!-- Selected address display -->
+      <div class="panel-section">
+        <label class="panel-label"><i class="fa-solid fa-location-dot"></i> Địa chỉ đã chọn</label>
+        <div class="selected-address-card" id="selected-address-card">
+          <div class="no-address-view" id="no-address-view">
+            <i class="fa-solid fa-map-pin"></i>
+            <p>Chưa chọn vị trí nào.<br>Nhấn vào bản đồ để bắt đầu!</p>
+          </div>
+          <div class="address-result-view" id="address-result-view" style="display:none">
+            <div class="address-icon-wrap">
+              <i class="fa-solid fa-house"></i>
+            </div>
+            <div class="address-details">
+              <p class="address-main" id="address-main-text">--</p>
+              <p class="address-coords" id="address-coords-text">--</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Note field -->
+      <div class="panel-section" id="note-section" style="display:none">
+        <label class="panel-label"><i class="fa-solid fa-pen-to-square"></i> Ghi chú thêm (tùy chọn)</label>
+        <textarea id="delivery-note" class="delivery-note-input" placeholder="Ví dụ: Tòa nhà A, tầng 3, căn hộ 302. Gọi trước khi đến..."></textarea>
+      </div>
+
+      <!-- Confirm button -->
+      <div class="panel-section">
+        <button class="confirm-address-btn" id="confirm-address-btn" disabled onclick="confirmAddress()">
+          <i class="fa-solid fa-circle-check"></i>
+          Xác Nhận Địa Chỉ Này
+        </button>
+        <p class="confirm-hint">Địa chỉ sẽ được điền tự động vào form thanh toán</p>
+      </div>
+
+    </aside>
+
+    <!-- MAP CONTAINER -->
+    <div class="dm-map-container">
+      <div id="map"></div>
+
+      <!-- Map overlay tips -->
+      <div class="map-tip" id="map-tip">
+        <i class="fa-solid fa-hand-pointer"></i>
+        <span>Nhấn vào bản đồ để chọn điểm giao hàng</span>
+      </div>
+
+      <!-- Loading indicator on map -->
+      <div class="map-loading" id="map-loading" style="display:none">
+        <div class="map-loading-spinner"></div>
+        <span>Đang tìm địa chỉ...</span>
+      </div>
+
+      <!-- GPS accuracy ring (shown when GPS active) -->
+      <div class="gps-locating-overlay" id="gps-locating" style="display:none">
+        <div class="gps-ring-1"></div>
+        <div class="gps-ring-2"></div>
+        <div class="gps-ring-3"></div>
+        <i class="fa-solid fa-location-crosshairs gps-center-icon"></i>
+        <p>Đang định vị GPS...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TOAST -->
+  <div class="dm-toast-container" id="dm-toast-container"></div>
+
+  <script src="js/delivery-map.js"></script>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodExpress - Theo Dõi Đơn Hàng</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Leaflet Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Reuse stylesheet parameters -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/delivery-map.css">
+  <style>
+    /* Custom Override for premium full screen tracking dashboard */
+    body {
+      background-color: var(--bg-body, #f8f9fa);
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+    .track-layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      height: calc(100vh - 70px);
+      margin-top: 70px;
+    }
+    .track-panel {
+      background-color: var(--bg-card, #ffffff);
+      border-right: 1px solid var(--glass-border, rgba(0,0,0,0.08));
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 24px;
+      gap: 20px;
+      box-shadow: 4px 0 16px rgba(0,0,0,0.02);
+      z-index: 10;
+    }
+    .track-map-container {
+      position: relative;
+      height: 100%;
+    }
+    #track-map {
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Order Code Card */
+    .order-header-card {
+      background: linear-gradient(135deg, var(--primary-color, #ff5722), #ff7043);
+      color: #fff;
+      border-radius: var(--radius-md, 12px);
+      padding: 18px;
+      box-shadow: 0 4px 16px rgba(255, 87, 34, 0.2);
+    }
+    .order-header-card h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .order-header-card p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    /* ETA Display */
+    .eta-box {
+      background-color: var(--bg-input, #f1f3f5);
+      border-radius: var(--radius-md, 12px);
+      padding: 16px;
+      text-align: center;
+      border: 1px solid var(--glass-border, rgba(0,0,0,0.08));
+    }
+    .eta-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted, #868e96);
+      margin-bottom: 6px;
+    }
+    .eta-time {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--primary-color, #ff5722);
+      line-height: 1.1;
+    }
+    .eta-distance {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-dark, #212529);
+      margin-top: 4px;
+    }
+
+    /* Shipper Card */
+    .shipper-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background-color: var(--bg-card, #fff);
+      border: 1px solid var(--glass-border, rgba(0,0,0,0.08));
+      border-radius: var(--radius-md, 12px);
+      padding: 14px;
+    }
+    .shipper-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background-color: #ffebd8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--primary-color, #ff5722);
+      border: 2px solid #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .shipper-info {
+      flex: 1;
+    }
+    .shipper-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text-dark, #212529);
+    }
+    .shipper-vehicle {
+      font-size: 12px;
+      color: var(--text-muted, #868e96);
+      margin-top: 2px;
+    }
+    .shipper-contact {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-call {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-call:hover {
+      background-color: #2e7d32;
+      color: #fff;
+    }
+
+    /* Timeline */
+    .timeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 8px 4px;
+    }
+    .timeline-item {
+      display: flex;
+      gap: 14px;
+      position: relative;
+    }
+    .timeline-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 13px;
+      top: 28px;
+      bottom: -18px;
+      width: 2px;
+      background-color: var(--glass-border, rgba(0,0,0,0.08));
+    }
+    .timeline-item.done:not(:last-child)::after {
+      background-color: #2ecc71;
+    }
+    .timeline-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: var(--bg-input, #f1f3f5);
+      border: 2px solid var(--glass-border, rgba(0,0,0,0.08));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--text-muted, #868e96);
+      z-index: 2;
+      transition: all 0.3s;
+    }
+    .timeline-item.done .timeline-badge {
+      background-color: rgba(46, 204, 113, 0.15);
+      border-color: #2ecc71;
+      color: #2ecc71;
+    }
+    .timeline-item.active .timeline-badge {
+      background-color: rgba(255, 87, 34, 0.15);
+      border-color: var(--primary-color, #ff5722);
+      color: var(--primary-color, #ff5722);
+      box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.12);
+      animation: pulse-tracking 1.5s infinite;
+    }
+    .timeline-content {
+      flex: 1;
+      padding-top: 4px;
+    }
+    .timeline-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-dark, #212529);
+    }
+    .timeline-desc {
+      font-size: 12px;
+      color: var(--text-muted, #868e96);
+      margin-top: 2px;
+    }
+    .timeline-item.active .timeline-title {
+      color: var(--primary-color, #ff5722);
+    }
+    
+    @keyframes pulse-tracking {
+      0% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(255, 87, 34, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0); }
+    }
+
+    /* Info lines */
+    .track-info-line {
+      font-size: 13.5px;
+      color: var(--text-dark, #212529);
+      line-height: 1.5;
+    }
+    .track-info-line i {
+      color: var(--primary-color, #ff5722);
+      width: 18px;
+      margin-right: 6px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .track-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: 350px 1fr;
+        height: calc(100vh - 70px);
+      }
+      .track-panel {
+        order: 2;
+        border-right: none;
+        border-top: 1px solid var(--glass-border);
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.02);
+      }
+      .track-map-container {
+        order: 1;
+        height: 350px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="dm-header">
+    <div class="dm-header-inner">
+      <button class="back-btn" onclick="location.href='index.html'">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <div class="dm-logo">
+        <span class="dm-logo-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
+        <span class="dm-logo-text">Food<span>Express</span></span>
+      </div>
+      <div class="dm-header-title">
+        <h1>Theo Dõi Đơn Hàng</h1>
+        <p>Hành trình giao đồ ăn siêu tốc đến bạn</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD LAYOUT -->
+  <div class="track-layout">
+    
+    <!-- LEFT PANEL: DETAILS AND TIMELINE -->
+    <aside class="track-panel">
+      
+      <!-- Order identity -->
+      <div class="order-header-card">
+        <h2 id="order-id-label">Mã Đơn Hàng: #HD--</h2>
+        <p id="order-date-label">Ngày đặt: --/--/----</p>
+      </div>
+
+      <!-- ETA / Remaining Distance -->
+      <div class="eta-box" id="eta-container" style="display:none">
+        <div class="eta-title">Thời gian dự kiến còn lại</div>
+        <div class="eta-time" id="eta-time-label">-- phút</div>
+        <div class="eta-distance" id="eta-distance-label">Shipper cách bạn -- m</div>
+      </div>
+
+      <!-- Shipper Info -->
+      <div class="shipper-card" id="shipper-info-box" style="display:none">
+        <div class="shipper-avatar">
+          <i class="fa-solid fa-motorcycle"></i>
+        </div>
+        <div class="shipper-info">
+          <div class="shipper-name" id="shipper-name-label">Nguyễn Văn Hùng</div>
+          <div class="shipper-vehicle" id="shipper-vehicle-label">Xe Honda Wave - 29G1-987.65</div>
+        </div>
+        <div class="shipper-contact">
+          <button class="btn-call" onclick="alert('Đang kết nối cuộc gọi đến shipper...');" title="Gọi điện cho Shipper">
+            <i class="fa-solid fa-phone"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Timeline tracking -->
+      <div class="panel-section">
+        <label class="panel-label"><i class="fa-solid fa-list-check"></i> Trạng thái giao nhận</label>
+        <div class="timeline-container">
+          <!-- Step 1 -->
+          <div class="timeline-item" id="step-cho-xac-nhan">
+            <div class="timeline-badge"><i class="fa-solid fa-receipt"></i></div>
+            <div class="timeline-content">
+              <div class="timeline-title">Đã tiếp nhận đơn hàng</div>
+              <div class="timeline-desc">Đơn hàng của bạn đã gửi đến hệ thống FoodExpress.</div>
+            </div>
+          </div>
+          <!-- Step 2 -->
+          <div class="timeline-item" id="step-dang-chuan-bi">
+            <div class="timeline-badge"><i class="fa-solid fa-fire-burner"></i></div>
+            <div class="timeline-content">
+              <div class="timeline-title">Đang chuẩn bị món ăn</div>
+              <div class="timeline-desc">Đầu bếp nhà hàng đang chế biến các món ăn nóng hổi.</div>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div class="timeline-item" id="step-dang-giao">
+            <div class="timeline-badge"><i class="fa-solid fa-motorcycle"></i></div>
+            <div class="timeline-content">
+              <div class="timeline-title">Đang giao hàng siêu tốc</div>
+              <div class="timeline-desc" id="delivering-desc">Shipper đang trên đường vận chuyển món ăn tới bạn.</div>
+            </div>
+          </div>
+          <!-- Step 4 -->
+          <div class="timeline-item" id="step-hoan-thanh">
+            <div class="timeline-badge"><i class="fa-solid fa-house-chimney"></i></div>
+            <div class="timeline-content">
+              <div class="timeline-title">Đã giao hàng thành công</div>
+              <div class="timeline-desc">Chúc bạn có một bữa ăn ngon miệng và ấm cúng!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recipient & Destination Info -->
+      <div class="panel-section">
+        <label class="panel-label"><i class="fa-solid fa-circle-info"></i> Thông tin giao nhận</label>
+        <div style="display:flex; flex-direction:column; gap:12px; padding:6px 0;">
+          <div class="track-info-line">
+            <i class="fa-solid fa-user"></i> Người nhận: <span id="recipient-name">--</span>
+          </div>
+          <div class="track-info-line">
+            <i class="fa-solid fa-phone"></i> Điện thoại: <span id="recipient-phone">--</span>
+          </div>
+          <div class="track-info-line">
+            <i class="fa-solid fa-location-dot"></i> Địa chỉ nhận: <span id="recipient-address">--</span>
+          </div>
+        </div>
+        
+        <!-- Address/Phone Update Button -->
+        <button id="btn-edit-delivery" class="track-btn btn-outline" style="margin-top:12px; width:100%; display:none; padding:10px; border-radius:8px; font-weight:600; cursor:pointer; gap:6px; align-items:center; justify-content:center;">
+          <i class="fa-solid fa-pen-to-square"></i> Thay đổi thông tin nhận
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT PANEL: LEAFLET MAP -->
+    <div class="track-map-container">
+      <div id="track-map"></div>
+      
+      <!-- Overlay loader -->
+      <div class="map-loading" id="track-loader">
+        <div class="map-loading-spinner"></div>
+        <span>Đang đồng bộ hành trình đơn hàng...</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== MODAL: UPDATE DELIVERY INFO ==================== -->
+  <div class="modal-overlay" id="edit-delivery-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center;">
+    <div class="modal-card" style="background: var(--bg-card, #fff); padding: 24px; border-radius: 16px; width: 90%; max-width: 450px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+      <button class="modal-close" id="edit-delivery-close" style="position: absolute; right: 16px; top: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-map-location-dot text-primary" style="color: #ff5722;"></i> Thay đổi thông tin nhận
+      </h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Bạn chỉ có thể thay đổi thông tin khi đơn hàng ở trạng thái <b>Chờ xác nhận</b>.</p>
+      
+      <form id="edit-delivery-form">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-dark);"><i class="fa-solid fa-location-dot"></i> Địa chỉ giao hàng mới <span style="color: red;">*</span></label>
+          <input type="text" id="edit-delivery-address" placeholder="Nhập địa chỉ giao hàng cụ thể..." required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; background: var(--bg-body, #f8fafc); color: var(--text-dark); font-size: 14px;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-dark);"><i class="fa-solid fa-phone"></i> Số điện thoại mới <span style="color: red;">*</span></label>
+          <input type="tel" id="edit-delivery-phone" placeholder="Nhập số điện thoại nhận hàng..." required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; background: var(--bg-body, #f8fafc); color: var(--text-dark); font-size: 14px;">
+        </div>
+        
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" id="btn-edit-delivery-cancel" style="padding: 10px 16px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; background: none; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--text-muted);">Hủy</button>
+          <button type="submit" style="padding: 10px 20px; border: none; border-radius: 8px; background: #ff5722; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-regular fa-floppy-disk"></i> Lưu thay đổi
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: SHIPPER ĐÃ ĐẾN NƠI - XÁC NHẬN ==================== -->
+  <div id="arrival-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:100000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+    <div style="background:var(--bg-card,#fff); padding:36px 28px; border-radius:24px; width:90%; max-width:460px; text-align:center; position:relative; box-shadow:0 24px 60px rgba(0,0,0,0.35); animation:scaleUp 0.4s cubic-bezier(0.34,1.56,0.64,1);">
+      <!-- Pulsing motorcycle icon -->
+      <div style="width:88px; height:88px; background:linear-gradient(135deg,#ff5722,#ff7043); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:40px; box-shadow:0 8px 24px rgba(255,87,34,0.45); animation:pulse-tracking 1.5s infinite;">
+        🛵
+      </div>
+      <h2 style="font-size:22px; font-weight:800; color:var(--text-dark,#212529); margin-bottom:10px;">Shipper Đã Đến Nơi!</h2>
+      <p style="font-size:14px; color:var(--text-muted,#868e96); margin-bottom:6px; line-height:1.6;">
+        <b style="color:var(--text-dark,#212529);">Shipper Nguyễn Văn Hùng</b> đã có mặt tại điểm giao hàng.
+      </p>
+      <p style="font-size:13.5px; color:var(--text-muted,#868e96); margin-bottom:20px; line-height:1.6;">
+        Vui lòng kiểm tra đơn hàng và xác nhận bên dưới:
+      </p>
+      <div id="arrival-order-id" style="display:inline-block; background:rgba(255,87,34,0.1); color:#ff5722; font-size:13px; font-weight:700; padding:6px 18px; border-radius:20px; margin-bottom:24px; border:1px solid rgba(255,87,34,0.25);">
+        Đơn hàng #HD--
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <button id="btn-confirm-pickup" style="width:100%; padding:15px; background:linear-gradient(135deg,#2ecc71,#27ae60); color:#fff; border:none; border-radius:14px; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 6px 18px rgba(46,204,113,0.4); transition:all 0.2s; font-family:inherit;">
+          <i class="fa-solid fa-box-open"></i> Lấy Hàng Thành Công
+        </button>
+        <button id="btn-confirm-return" style="width:100%; padding:15px; background:linear-gradient(135deg,#e74c3c,#c0392b); color:#fff; border:none; border-radius:14px; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 6px 18px rgba(231,76,60,0.35); transition:all 0.2s; font-family:inherit;">
+          <i class="fa-solid fa-rotate-left"></i> Trả Lại Hàng
+        </button>
+      </div>
+      <p style="font-size:11.5px; color:var(--text-muted,#adb5bd); margin-top:18px; line-height:1.5;">
+        ⚠️ Hành động này không thể hoàn tác sau khi xác nhận.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: LẤY HÀNG THÀNH CÔNG - ĂN MỪNG ==================== -->
+  <div id="pickup-success-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:100000; align-items:center; justify-content:center;">
+    <div style="background:var(--bg-card,#fff); padding:40px 30px; border-radius:24px; width:90%; max-width:500px; text-align:center; position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.4); animation:scaleUp 0.4s cubic-bezier(0.34,1.56,0.64,1);">
+      <canvas id="pickup-confetti-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; border-radius:24px;"></canvas>
+      <div style="width:80px; height:80px; background:#e8f5e9; color:#2ecc71; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; font-size:40px; box-shadow:0 8px 16px rgba(46,204,113,0.2);">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h2 style="font-size:24px; font-weight:800; color:#2ecc71; margin-bottom:12px;">Giao Hàng Thành Công!</h2>
+      <p style="font-size:15px; color:var(--text-dark,#212529); margin-bottom:24px; line-height:1.6;">Cảm ơn bạn đã lựa chọn <b>FoodExpress</b>. Shipper đã hoàn thành việc giao hàng đến địa chỉ của bạn. Chúc bạn ngon miệng!</p>
+      <div style="background:var(--bg-body,#f8fafc); border-radius:12px; padding:16px; margin-bottom:24px; display:grid; grid-template-columns:repeat(2,1fr); gap:12px; text-align:left;">
+        <div>
+          <span style="font-size:11px; color:var(--text-muted,#adb5bd); display:block; margin-bottom:2px;">Mã đơn hàng</span>
+          <span id="del-success-order-id" style="font-size:14px; font-weight:700; color:var(--text-dark,#212529);">HD--</span>
+        </div>
+        <div>
+          <span style="font-size:11px; color:var(--text-muted,#adb5bd); display:block; margin-bottom:2px;">Trạng thái</span>
+          <span style="font-size:14px; font-weight:700; color:#2ecc71; display:flex; align-items:center; gap:4px;"><i class="fa-solid fa-check-double"></i> Hoàn thành</span>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px; justify-content:center;">
+        <a href="/" style="padding:12px 28px; background:#ff5722; color:#fff; text-decoration:none; border-radius:10px; font-weight:600; font-size:15px; box-shadow:0 4px 12px rgba(255,87,34,0.3); display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-utensils"></i> Quay về trang chủ
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: TRẢ LẠI HÀNG - XÁC NHẬN HỦY ==================== -->
+  <div id="return-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:100000; align-items:center; justify-content:center;">
+    <div style="background:var(--bg-card,#fff); padding:40px 30px; border-radius:24px; width:90%; max-width:500px; text-align:center; position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.4); animation:scaleUp 0.4s cubic-bezier(0.34,1.56,0.64,1);">
+      <div style="width:80px; height:80px; background:#fdecea; color:#e74c3c; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; font-size:40px; box-shadow:0 8px 16px rgba(231,76,60,0.2);">
+        <i class="fa-solid fa-rotate-left"></i>
+      </div>
+      <h2 style="font-size:22px; font-weight:800; color:#e74c3c; margin-bottom:12px;">Đã Ghi Nhận Trả Hàng</h2>
+      <p style="font-size:14.5px; color:var(--text-dark,#212529); margin-bottom:24px; line-height:1.7;">
+        Đơn hàng của bạn đã được hủy và shipper sẽ mang hàng trở về kho. Rất tiếc vì sự cố xảy ra — chúng tôi sẽ cải thiện dịch vụ tốt hơn!
+      </p>
+      <div style="background:var(--bg-body,#f8fafc); border-radius:12px; padding:16px; margin-bottom:24px; display:grid; grid-template-columns:repeat(2,1fr); gap:12px; text-align:left;">
+        <div>
+          <span style="font-size:11px; color:var(--text-muted,#adb5bd); display:block; margin-bottom:2px;">Mã đơn hàng</span>
+          <span id="return-order-id" style="font-size:14px; font-weight:700; color:var(--text-dark,#212529);">HD--</span>
+        </div>
+        <div>
+          <span style="font-size:11px; color:var(--text-muted,#adb5bd); display:block; margin-bottom:2px;">Trạng thái</span>
+          <span style="font-size:14px; font-weight:700; color:#e74c3c; display:flex; align-items:center; gap:4px;"><i class="fa-solid fa-ban"></i> Đã hủy</span>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px; justify-content:center;">
+        <a href="/" style="padding:12px 28px; background:#e74c3c; color:#fff; text-decoration:none; border-radius:10px; font-weight:600; font-size:15px; box-shadow:0 4px 12px rgba(231,76,60,0.3); display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-house"></i> Quay về trang chủ
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification container -->
+  <div id="toast-container" class="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+  <script src="js/track-order.js"></script>
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodExpress - Giao Đồ Ăn Nhanh & Nóng Hổi</title>
+  
+  <!-- Google Fonts: Be Vietnam Pro (Vietnamese-optimized) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ==================== HEADER & NAVBAR ==================== -->
+  <header class="main-header">
+    <div class="container header-container">
+      <!-- Logo -->
+      <a href="#" class="logo">
+        <span class="logo-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
+        <span class="logo-text">Food<span>Express</span></span>
+      </a>
+
+      <!-- Search Bar -->
+      <div class="search-wrapper">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="search-input" placeholder="Tìm kiếm món ăn ngon ngay...">
+        <button id="search-btn" class="btn btn-search">Tìm kiếm</button>
+      </div>
+
+      <!-- Navigation Actions -->
+      <div class="header-actions">
+        <!-- Theme Toggle (Optional but Premium) -->
+        <button id="theme-toggle" class="action-btn" title="Chuyển chế độ tối">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- Favorite Button -->
+        <a href="favorites.html" class="action-btn" title="Món ăn yêu thích">
+          <i class="fa-solid fa-heart" style="color: #ff4757;"></i>
+        </a>
+
+        <!-- Cart Button -->
+        <button id="cart-btn" class="action-btn cart-toggle-btn" title="Giỏ hàng">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-badge" id="cart-count">0</span>
+        </button>
+
+        <!-- Auth Button -->
+        <button id="login-btn" class="btn btn-primary btn-login">
+          <i class="fa-solid fa-user-astronaut"></i>
+          <span>Đăng Nhập</span>
+        </button>
+
+        <!-- Profile Dropdown (Hidden by default, shown when logged in) -->
+        <div class="profile-dropdown" id="profile-dropdown" style="display: none;">
+          <button class="action-btn profile-trigger" id="profile-trigger">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" class="avatar-img">
+            <span class="username-span" id="username-display">Khách</span>
+          </button>
+          <div class="dropdown-menu">
+            <a href="#" id="menu-profile-btn"><i class="fa-regular fa-id-card"></i> Tài khoản</a>
+            <a href="#" id="menu-orders-btn"><i class="fa-solid fa-receipt"></i> Đơn hàng đã mua</a>
+            <a href="favorites.html" id="menu-favorites-btn"><i class="fa-solid fa-heart" style="color: #ff4757;"></i> Món ăn yêu thích</a>
+            <a href="/admin.html" id="menu-admin-btn" style="display: none; color: var(--primary);"><i class="fa-solid fa-user-shield"></i> Quản trị hệ thống</a>
+            <hr>
+            <a href="#" id="logout-btn" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO BANNER SECTION ==================== -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-content">
+        <span class="badge badge-hero"><i class="fa-solid fa-truck-ramp-box"></i> Giao hàng siêu tốc trong 20 phút</span>
+        <h1 class="hero-title">Đập tan cơn đói với món ăn <span class="text-gradient">Nóng Hổi & Thơm Ngon!</span></h1>
+        <p class="hero-subtitle">Đặt món dễ dàng từ danh mục đa dạng phong phú, áp dụng ngập tràn mã giảm giá và giao tận tay bạn chỉ trong một nốt nhạc.</p>
+        
+        <div class="hero-actions-row">
+          <a href="#menu-section" class="btn btn-primary btn-lg"><i class="fa-solid fa-utensils"></i> Khám Phá Menu</a>
+          <a href="#promotions-section" class="btn btn-outline btn-lg"><i class="fa-solid fa-percent"></i> Xem Khuyến Mãi</a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <h3>500+</h3>
+            <p>Món ăn ngon</p>
+          </div>
+          <div class="stat-item">
+            <h3>10K+</h3>
+            <p>Khách hàng tin dùng</p>
+          </div>
+          <div class="stat-item">
+            <h3>4.9 <i class="fa-solid fa-star text-warning"></i></h3>
+            <p>Đánh giá chất lượng</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="hero-visual">
+        <div class="visual-bg-glow"></div>
+        <div class="hero-card-floating">
+          <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600" alt="Special Burger" class="floating-img">
+          <div class="floating-badge badge-top">
+            <span class="icon-circle"><i class="fa-solid fa-fire"></i></span>
+            <div>
+              <h4>Bán Chạy Nhất</h4>
+              <p>Burger Bò Đặc Biệt</p>
+            </div>
+          </div>
+          <div class="floating-badge badge-bottom">
+            <span class="icon-circle text-success"><i class="fa-solid fa-motorcycle"></i></span>
+            <div>
+              <h4>Free Ship</h4>
+              <p>Cho đơn từ 150k</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PROMOTIONS SECTION ==================== -->
+  <section class="promotions-section" id="promotions-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-title-wrapper">
+          <span class="section-subtitle">Ưu đãi độc quyền</span>
+          <h2 class="section-title">🔥 Khuyến Mãi Đang Diễn Ra</h2>
+        </div>
+        <p class="section-desc">Click trực tiếp vào mã khuyến mãi bên dưới để sao chép nhanh và áp dụng khi thanh toán đơn hàng!</p>
+      </div>
+
+      <div class="promotions-grid" id="promotions-container">
+        <!-- Skeleton Loading for Promotions -->
+        <div class="skeleton-card promotion-skeleton"></div>
+        <div class="skeleton-card promotion-skeleton"></div>
+        <div class="skeleton-card promotion-skeleton"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MENU SECTION ==================== -->
+  <section class="menu-section" id="menu-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-subtitle">Thực đơn của chúng tôi</span>
+        <h2 class="section-title text-center">🍔 Thực Đơn Đa Dạng Giao Ngay</h2>
+        <p class="section-desc text-center">Lọc món ăn theo danh mục bạn yêu thích hoặc tìm kiếm món ăn nhanh chóng.</p>
+      </div>
+
+      <!-- Categories Filter Tabs -->
+      <div class="category-tabs-container">
+        <div class="category-tabs" id="category-tabs-container">
+          <!-- Dynamically populated or skeleton loaded -->
+          <button class="category-tab active" data-category-id="all">
+            <span class="tab-icon"><i class="fa-solid fa-border-all"></i></span>
+            <span>Tất Cả Món</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search Result Status Info -->
+      <div id="search-status-wrapper" class="search-status-wrapper" style="display: none;">
+        <span id="search-status-text">Kết quả tìm kiếm cho: "..."</span>
+        <button id="clear-search-btn" class="btn-clear-search"><i class="fa-solid fa-circle-xmark"></i> Xóa tìm kiếm</button>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="products-grid" id="products-container">
+        <!-- Skeleton Loading for Products -->
+        <div class="skeleton-card product-skeleton"></div>
+        <div class="skeleton-card product-skeleton"></div>
+        <div class="skeleton-card product-skeleton"></div>
+        <div class="skeleton-card product-skeleton"></div>
+        <div class="skeleton-card product-skeleton"></div>
+        <div class="skeleton-card product-skeleton"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== APP FEATURES / BANNER ==================== -->
+  <section class="features-section">
+    <div class="container features-container">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-leaf"></i></div>
+        <h3>Nguyên Liệu Sạch</h3>
+        <p>100% nguyên liệu tươi sạch, chế biến vệ sinh chuẩn an toàn thực phẩm.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
+        <h3>Giao Hàng Siêu Tốc</h3>
+        <p>Đội ngũ shipper đông đảo chuyên nghiệp, giữ đồ ăn luôn ấm nóng khi tới tay bạn.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-headset"></i></div>
+        <h3>Hỗ Trợ 24/7</h3>
+        <p>Tổng đài CSKH hoạt động liên tục, sẵn sàng giải quyết mọi thắc mắc của bạn.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="main-footer">
+    <div class="container footer-grid">
+      <div class="footer-info">
+        <a href="#" class="logo footer-logo">
+          <span class="logo-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
+          <span class="logo-text text-white">Food<span>Express</span></span>
+        </a>
+        <p class="footer-desc">FoodExpress là hệ thống đặt đồ ăn trực tuyến hàng đầu, mang đến cho bạn những món ăn chất lượng tốt nhất với dịch vụ giao hàng chuyên nghiệp, an toàn và nhanh chóng.</p>
+        <div class="social-links">
+          <a href="#" class="social-link"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="social-link"><i class="fa-brands fa-tiktok"></i></a>
+          <a href="#" class="social-link"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>Liên Kết Nhanh</h4>
+        <ul class="footer-links">
+          <li><a href="#">Trang Chủ</a></li>
+          <li><a href="#menu-section">Thực Đơn</a></li>
+          <li><a href="#promotions-section">Khuyến Mãi</a></li>
+          <li><a href="/api-docs">Tài Liệu API Backend</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>Liên Hệ Hỗ Trợ</h4>
+        <ul class="footer-contact">
+          <li><i class="fa-solid fa-phone"></i> 1900 xxxx (Hỗ trợ đặt đơn)</li>
+          <li><i class="fa-solid fa-envelope"></i> support@foodexpress.com</li>
+          <li><i class="fa-solid fa-location-dot"></i> 123 Đường Xuân Thủy, Cầu Giấy, Hà Nội</li>
+        </ul>
+      </div>
+
+      <div class="footer-newsletter">
+        <h4>Đăng ký Nhận Ưu Đãi</h4>
+        <p>Nhận ngay thông tin khuyến mãi nóng hổi và voucher giảm giá cực sâu hàng tuần.</p>
+        <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Cảm ơn bạn đã đăng ký nhận bản tin!');">
+          <input type="email" placeholder="Email của bạn..." required>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="container footer-bottom">
+      <p>&copy; 2026 FoodExpress. Được xây dựng chuyên nghiệp bằng HTML/CSS/JS thuần và REST API. Hỗ trợ học tập.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL: PRODUCT DETAILS ==================== -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal-card">
+      <button class="modal-close" id="product-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-body product-modal-layout">
+        <div class="modal-product-img-wrapper">
+          <img src="" id="modal-product-img" alt="Food Image">
+        </div>
+        <div class="modal-product-info">
+          <span class="category-badge" id="modal-product-category">Danh mục</span>
+          <h2 id="modal-product-title">Tên món ăn sản phẩm</h2>
+          <div id="modal-product-stars-wrapper" style="margin-bottom: 8px;"></div>
+          <div class="modal-product-price" id="modal-product-price">0đ</div>
+          <p class="modal-product-desc" id="modal-product-desc">Mô tả chi tiết về sản phẩm này...</p>
+          
+          <div class="stock-status-row">
+            <span class="stock-badge" id="modal-product-stock-badge">Còn hàng</span>
+            <span class="stock-number" id="modal-product-stock-num">Còn lại: 0 phần</span>
+          </div>
+
+          <hr class="modal-divider">
+
+          <div class="purchase-actions">
+            <div class="quantity-selector">
+              <button class="qty-btn" id="qty-minus-btn"><i class="fa-solid fa-minus"></i></button>
+              <input type="number" id="qty-input" value="1" min="1">
+              <button class="qty-btn" id="qty-plus-btn"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <button class="btn btn-primary btn-lg flex-grow-1" id="modal-add-to-cart-btn">
+              <i class="fa-solid fa-bag-shopping"></i> Thêm Vào Giỏ Hàng
+            </button>
+          </div>
+
+          <hr class="modal-divider">
+
+          <!-- Product Reviews Section -->
+          <div class="product-reviews-section">
+            <h3 style="font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-comments text-primary"></i> Đánh giá từ khách hàng (<span id="modal-product-reviews-count">0</span>)
+            </h3>
+            <div class="product-reviews-tab-content" id="modal-product-reviews-container">
+              <div style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 10px;">
+                Đang tải đánh giá...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: CART DRAWER ==================== -->
+  <div class="modal-overlay" id="cart-modal">
+    <div class="cart-drawer">
+      <div class="cart-drawer-header">
+        <h3><i class="fa-solid fa-bag-shopping text-primary"></i> Giỏ Hàng Của Bạn</h3>
+        <button class="modal-close-simple" id="cart-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="cart-drawer-body" id="cart-items-container">
+        <!-- Dynamic items populated by JS -->
+        <div class="empty-cart-view">
+          <i class="fa-solid fa-basket-shopping empty-icon"></i>
+          <p>Giỏ hàng của bạn đang trống!</p>
+          <a href="#menu-section" class="btn btn-primary btn-sm" id="empty-cart-explore-btn">Mua sắm ngay</a>
+        </div>
+      </div>
+
+      <div class="cart-drawer-footer" id="cart-footer" style="display: none;">
+        <!-- Apply Discount Section -->
+        <div class="coupon-apply-row">
+          <input type="text" id="coupon-input" placeholder="Nhập mã giảm giá (ví dụ GIAM20K)">
+          <button id="apply-coupon-btn" class="btn btn-outline btn-sm">Áp dụng</button>
+        </div>
+        <div id="applied-coupon-status" class="applied-coupon-status" style="display: none;">
+          <span class="coupon-tag"><i class="fa-solid fa-ticket"></i> <span id="coupon-tag-name">GIAM20K</span></span>
+          <span id="coupon-discount-value" class="text-success">-0đ</span>
+          <button id="remove-coupon-btn" class="btn-remove-coupon"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <hr class="cart-divider">
+
+        <div class="price-summary">
+          <div class="price-row">
+            <span>Tạm tính:</span>
+            <span id="cart-subtotal">0đ</span>
+          </div>
+          <div class="price-row text-success" id="cart-discount-row" style="display: none;">
+            <span>Giảm giá:</span>
+            <span id="cart-discount">-0đ</span>
+          </div>
+          <div class="price-row">
+            <span>Phí vận chuyển:</span>
+            <span>15.000đ</span>
+          </div>
+          <div class="price-row total-row">
+            <span>Tổng cộng:</span>
+            <span id="cart-total" class="text-primary">0đ</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-lg btn-block" id="checkout-btn">
+          <i class="fa-solid fa-circle-check"></i> Tiến Hành Thanh Toán
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: AUTHENTICATION ==================== -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="auth-modal-card">
+      <button class="modal-close" id="auth-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      
+      <!-- Tabs header -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login-btn">Đăng Nhập</button>
+        <button class="auth-tab" id="tab-register-btn">Đăng Ký</button>
+      </div>
+
+      <div class="auth-body">
+        <!-- Login Form -->
+        <form id="login-form" class="auth-form">
+          <div class="form-group">
+            <label for="login-username"><i class="fa-solid fa-user"></i> Tên tài khoản</label>
+            <input type="text" id="login-username" placeholder="Nhập tên đăng nhập của bạn..." required>
+          </div>
+          <div class="form-group">
+            <label for="login-password"><i class="fa-solid fa-lock"></i> Mật khẩu</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="login-password" placeholder="Nhập mật khẩu của bạn..." required>
+              <button type="button" class="pwd-toggle-btn"><i class="fa-regular fa-eye"></i></button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg m-t-20">Đăng Nhập</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="auth-form" style="display: none;">
+          <div class="form-group">
+            <label for="reg-username"><i class="fa-solid fa-user"></i> Tên đăng ký</label>
+            <input type="text" id="reg-username" placeholder="Nhập tên đăng ký mới (ít nhất 3 ký tự)..." required>
+          </div>
+          <div class="form-group">
+            <label for="reg-fullname"><i class="fa-solid fa-signature"></i> Họ và tên</label>
+            <input type="text" id="reg-fullname" placeholder="Nhập họ tên đầy đủ..." required>
+          </div>
+          <div class="form-group">
+            <label for="reg-email"><i class="fa-solid fa-envelope"></i> Email liên hệ</label>
+            <input type="email" id="reg-email" placeholder="Nhập email của bạn..." required>
+          </div>
+          <div class="form-group">
+            <label for="reg-phone"><i class="fa-solid fa-phone"></i> Số điện thoại</label>
+            <input type="text" id="reg-phone" placeholder="Nhập số điện thoại..." required>
+          </div>
+          <div class="form-group">
+            <label for="reg-password"><i class="fa-solid fa-lock"></i> Mật khẩu bảo mật</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="reg-password" placeholder="Mật khẩu chứa ít nhất 6 ký tự..." required>
+              <button type="button" class="pwd-toggle-btn"><i class="fa-regular fa-eye"></i></button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg m-t-20">Đăng Ký Tài Khoản</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: USER PROFILE ==================== -->
+  <div class="modal-overlay" id="profile-modal">
+    <div class="profile-modal-card">
+      <button class="modal-close" id="profile-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="profile-modal-header">
+        <h3><i class="fa-regular fa-id-card text-primary"></i> Thông Tin Tài Khoản</h3>
+      </div>
+      
+      <div class="profile-modal-body">
+        <div class="profile-avatar-section">
+          <div class="avatar-wrapper">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" alt="Avatar" id="profile-avatar-img">
+            <span class="role-badge" id="profile-role-badge">Khách hàng</span>
+          </div>
+          <h4 id="profile-display-name">Họ và tên</h4>
+          <p id="profile-display-username">@username</p>
+        </div>
+
+        <form id="profile-form" class="profile-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="profile-fullname"><i class="fa-solid fa-signature"></i> Họ và tên</label>
+              <input type="text" id="profile-fullname" required>
+            </div>
+            <div class="form-group">
+              <label for="profile-email"><i class="fa-solid fa-envelope"></i> Email liên hệ</label>
+              <input type="email" id="profile-email" placeholder="Chưa cập nhật...">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="profile-phone"><i class="fa-solid fa-phone"></i> Số điện thoại</label>
+              <input type="text" id="profile-phone" placeholder="Chưa cập nhật...">
+            </div>
+            <div class="form-group">
+              <label for="profile-address"><i class="fa-solid fa-location-dot"></i> Địa chỉ giao hàng</label>
+              <input type="text" id="profile-address" placeholder="Chưa cập nhật...">
+            </div>
+          </div>
+
+          <div class="change-password-toggle">
+            <button type="button" id="toggle-pwd-fields-btn" class="btn-toggle-link">
+              <i class="fa-solid fa-key"></i> Đổi mật khẩu tài khoản?
+            </button>
+          </div>
+
+          <div class="password-change-fields" id="password-change-fields" style="display: none;">
+            <div class="form-group">
+              <label for="profile-new-password"><i class="fa-solid fa-lock"></i> Mật khẩu mới</label>
+              <div class="password-input-wrapper">
+                <input type="password" id="profile-new-password" placeholder="Nhập mật khẩu mới muốn thay đổi...">
+                <button type="button" class="pwd-toggle-btn"><i class="fa-regular fa-eye"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg m-t-20" id="profile-save-btn">
+            <i class="fa-regular fa-floppy-disk"></i> Lưu Thay Đổi
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ORDER HISTORY ==================== -->
+  <div class="modal-overlay" id="orders-modal">
+    <div class="orders-modal-card">
+      <button class="modal-close" id="orders-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="orders-modal-header">
+        <h3><i class="fa-solid fa-receipt text-primary"></i> Lịch Sử Đơn Hàng Của Bạn</h3>
+        <button id="orders-refresh-btn" onclick="fetchOrders()" title="Làm mới danh sách đơn hàng" style="
+          background: none; border: 1.5px solid var(--primary); color: var(--primary);
+          border-radius: 8px; padding: 5px 12px; font-size: 13px; font-weight: 600;
+          cursor: pointer; display: flex; align-items: center; gap: 6px;
+          transition: all 0.2s;
+        " onmouseover="this.style.background='var(--primary)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--primary)'">
+          <i class="fa-solid fa-rotate-right"></i> Làm mới
+        </button>
+      </div>
+      
+      <div class="orders-modal-body">
+        <!-- Status Filter Tabs -->
+        <div class="orders-filter-tabs">
+          <button class="orders-filter-tab active" data-status="all">
+            <i class="fa-solid fa-list-ul"></i> Tất cả
+          </button>
+          <button class="orders-filter-tab" data-status="Chờ xác nhận">
+            <i class="fa-regular fa-clock"></i> Chờ xác nhận
+          </button>
+          <button class="orders-filter-tab" data-status="Đang giao">
+            <i class="fa-solid fa-truck-fast"></i> Đang giao
+          </button>
+          <button class="orders-filter-tab" data-status="Hoàn thành">
+            <i class="fa-regular fa-circle-check"></i> Hoàn thành
+          </button>
+          <button class="orders-filter-tab" data-status="Đã hủy">
+            <i class="fa-regular fa-circle-xmark"></i> Đã hủy
+          </button>
+        </div>
+
+        <!-- Orders List -->
+        <div class="orders-list-wrapper" id="orders-list-container">
+          <!-- Dynamic order items populated via JS -->
+          <div class="empty-orders-view">
+            <i class="fa-solid fa-receipt empty-icon"></i>
+            <p>Bạn chưa có đơn hàng nào!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: PRODUCT REVIEW ==================== -->
+  <div class="modal-overlay" id="review-modal">
+    <div class="review-modal-card">
+      <button class="modal-close" id="review-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="review-modal-header">
+        <h3><i class="fa-solid fa-star text-primary"></i> Đánh Giá Món Ăn</h3>
+        <p>Ý kiến của bạn sẽ giúp cộng đồng FoodExpress lựa chọn món ăn ngon dễ dàng hơn!</p>
+      </div>
+      
+      <div class="review-modal-body" id="review-items-container">
+        <!-- Sẽ được hiển thị tự động bằng JS -->
+      </div>
+      
+      <div class="review-submit-bar">
+        <button type="button" class="btn btn-primary" id="submit-reviews-btn">
+          <i class="fa-regular fa-paper-plane"></i> Gửi Đánh Giá Của Bạn
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: CHECKOUT CONFIRMATION ==================== -->
+  <div class="modal-overlay" id="checkout-modal">
+    <div class="checkout-modal-card">
+      <button class="modal-close" id="checkout-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="checkout-modal-header">
+        <h3><i class="fa-solid fa-map-location-dot text-primary"></i> Xác Nhận Đặt Hàng</h3>
+        <p>Vui lòng kiểm tra và điền đầy đủ thông tin giao hàng bên dưới.</p>
+      </div>
+
+      <form id="checkout-form" class="checkout-form">
+        <div class="form-group">
+          <label for="checkout-address"><i class="fa-solid fa-location-dot"></i> Địa chỉ nhận hàng <span class="required-star">*</span></label>
+          <div class="address-input-row">
+            <input type="text" id="checkout-address" placeholder="Nhập địa chỉ hoặc chọn trên bản đồ...">
+            <button type="button" id="open-map-btn" class="btn-open-map" onclick="openDeliveryMap()" title="Chọn vị trí trên bản đồ">
+              <i class="fa-solid fa-map-location-dot"></i>
+              <span>Bản đồ</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="checkout-phone"><i class="fa-solid fa-phone"></i> Số điện thoại nhận hàng <span class="required-star">*</span></label>
+          <input type="tel" id="checkout-phone" placeholder="Nhập số điện thoại nhận hàng...">
+        </div>
+
+        <!-- Payment Method Cards -->
+        <div class="form-group">
+          <label><i class="fa-solid fa-wallet"></i> Phương thức thanh toán <span class="required-star">*</span></label>
+          <div class="payment-methods-grid" id="payment-methods-grid">
+
+            <!-- Option 1: COD -->
+            <div class="payment-method-card active" data-value="Tiền mặt">
+              <div class="pm-icon pm-cod">
+                <i class="fa-solid fa-money-bill-wave"></i>
+              </div>
+              <div class="pm-info">
+                <span class="pm-name">Tiền mặt</span>
+                <span class="pm-desc">Thanh toán khi nhận hàng (COD)</span>
+              </div>
+              <div class="pm-check"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+
+            <!-- Option 2: MoMo -->
+            <div class="payment-method-card" data-value="Ví MoMo">
+              <div class="pm-icon pm-momo">
+                <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo" onerror="this.style.display='none';this.parentNode.innerHTML='<i class=\'fa-solid fa-mobile-screen-button\'></i>'">
+              </div>
+              <div class="pm-info">
+                <span class="pm-name">Ví MoMo</span>
+                <span class="pm-desc">Chuyển khoản qua ví MoMo</span>
+              </div>
+              <div class="pm-check"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+
+            <!-- Option 3: Bank Transfer -->
+            <div class="payment-method-card" data-value="Chuyển khoản ngân hàng">
+              <div class="pm-icon pm-bank">
+                <i class="fa-solid fa-building-columns"></i>
+              </div>
+              <div class="pm-info">
+                <span class="pm-name">Ngân hàng</span>
+                <span class="pm-desc">Chuyển khoản tài khoản ngân hàng</span>
+              </div>
+              <div class="pm-check"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+
+          </div>
+          <!-- Hidden input giữ giá trị -->
+          <input type="hidden" id="checkout-payment" value="Tiền mặt">
+        </div>
+
+        <!-- MoMo Payment Details (hiện khi chọn MoMo) -->
+        <div class="payment-detail-panel" id="panel-momo" style="display:none;">
+          <div class="payment-detail-header">
+            <span class="pd-badge pd-badge-momo"><i class="fa-solid fa-qrcode"></i> Thông tin chuyển khoản MoMo</span>
+          </div>
+          <div class="payment-detail-body">
+            <div class="pd-qr-wrapper">
+              <div class="pd-qr-placeholder">
+                <i class="fa-solid fa-qrcode"></i>
+                <span>QR MoMo</span>
+              </div>
+            </div>
+            <div class="pd-info-list">
+              <div class="pd-info-row">
+                <span class="pd-info-label"><i class="fa-solid fa-phone"></i> Số điện thoại</span>
+                <span class="pd-info-value pd-copyable" data-copy="0901234567">0901 234 567 <i class="fa-regular fa-copy"></i></span>
+              </div>
+              <div class="pd-info-row">
+                <span class="pd-info-label"><i class="fa-solid fa-user"></i> Chủ tài khoản</span>
+                <span class="pd-info-value">FOOD EXPRESS</span>
+              </div>
+              <div class="pd-info-row">
+                <span class="pd-info-label"><i class="fa-solid fa-pen"></i> Nội dung CK</span>
+                <span class="pd-info-value pd-highlight" id="momo-transfer-content">FE [Mã HD]</span>
+              </div>
+            </div>
+          </div>
+          <p class="pd-note"><i class="fa-solid fa-circle-info"></i> Vui lòng chuyển khoản đúng số tiền và ghi đúng nội dung. Đơn hàng sẽ được xác nhận sau khi nhận thanh toán.</p>
+        </div>
+
+        <!-- Bank Transfer Details (hiện khi chọn Ngân hàng) -->
+        <div class="payment-detail-panel" id="panel-bank" style="display:none;">
+          <div class="payment-detail-header">
+            <span class="pd-badge pd-badge-bank"><i class="fa-solid fa-building-columns"></i> Thông tin tài khoản ngân hàng</span>
+          </div>
+          <div class="payment-detail-body pd-bank-body">
+            <div class="pd-info-list pd-info-list-full">
+              <div class="pd-info-row">
+                <span class="pd-info-label"><i class="fa-solid fa-building-columns"></i> Ngân hàng</span>
+                <span class="pd-info-value">Vietcombank (VCB)</span>
+              </div>
+              <div class="pd-info-row">
+                <span class="pd-info-label"><i class="fa-solid fa-credit-card"></i> Số tài khoản</span>
+                <span class="pd-info-value pd-copyable" data-copy="1234567890123">1234 5678 90123 <i class="fa-regular fa-copy"></i></span>
+              </div>
+              <div class="pd-info-row">
+                <span class="pd-info-label"><i class="fa-solid fa-user"></i> Chủ tài khoản</span>
+                <span class="pd-info-value">CONG TY TNHH FOOD EXPRESS</span>
+              </div>
+              <div class="pd-info-row">
+                <span class="pd-info-label"><i class="fa-solid fa-pen"></i> Nội dung CK</span>
+                <span class="pd-info-value pd-highlight" id="bank-transfer-content">FE [Mã HD]</span>
+              </div>
+            </div>
+          </div>
+          <p class="pd-note"><i class="fa-solid fa-circle-info"></i> Vui lòng chuyển đúng số tiền. Đơn hàng được xử lý trong vòng 5-10 phút sau khi nhận thanh toán.</p>
+        </div>
+
+        <div class="form-group">
+          <label for="checkout-note"><i class="fa-solid fa-pen-to-square"></i> Ghi chú đơn hàng</label>
+          <textarea id="checkout-note" placeholder="Ghi chú thêm cho shipper (tùy chọn)..." rows="2"></textarea>
+        </div>
+
+        <div class="checkout-order-summary" id="checkout-order-summary">
+          <!-- Populated by JS -->
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg m-t-20" id="confirm-order-btn">
+          <i class="fa-solid fa-circle-check"></i> Xác Nhận & Đặt Hàng Ngay
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ORDER SUCCESS ==================== -->
+  <div class="modal-overlay" id="order-success-modal">
+    <div class="order-success-card">
+      <!-- Confetti Canvas -->
+      <canvas id="success-confetti-canvas" class="confetti-canvas"></canvas>
+
+      <!-- Close button -->
+      <button class="modal-close" id="order-success-close"><i class="fa-solid fa-xmark"></i></button>
+
+      <!-- Animated checkmark -->
+      <div class="success-icon-wrapper">
+        <div class="success-ring-outer"></div>
+        <div class="success-ring-inner"></div>
+        <div class="success-checkmark">
+          <svg viewBox="0 0 52 52" class="checkmark-svg">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="success-badge-label">🎉 Đặt Hàng Thành Công!</div>
+      <h2 class="success-title">Cảm ơn bạn đã tin tưởng<br><span class="text-gradient">FoodExpress!</span></h2>
+      <p class="success-subtitle">Đơn hàng của bạn đã được tiếp nhận và đang được chuẩn bị. Shipper sẽ giao đến bạn sớm nhất! 🛵💨</p>
+
+      <!-- Order Info Cards -->
+      <div class="success-info-grid">
+        <div class="success-info-item">
+          <i class="fa-solid fa-hashtag"></i>
+          <div>
+            <span class="info-label">Mã hóa đơn</span>
+            <span class="info-value" id="success-order-id">HD--</span>
+          </div>
+        </div>
+        <div class="success-info-item">
+          <i class="fa-solid fa-location-dot"></i>
+          <div>
+            <span class="info-label">Địa chỉ nhận</span>
+            <span class="info-value" id="success-address">--</span>
+          </div>
+        </div>
+        <div class="success-info-item">
+          <i class="fa-solid fa-phone"></i>
+          <div>
+            <span class="info-label">Số điện thoại</span>
+            <span class="info-value" id="success-phone">--</span>
+          </div>
+        </div>
+        <div class="success-info-item">
+          <i class="fa-solid fa-credit-card"></i>
+          <div>
+            <span class="info-label">Phương thức TT</span>
+            <span class="info-value" id="success-payment">Tiền mặt</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total price highlight -->
+      <div class="success-total-box">
+        <span>Tổng thanh toán</span>
+        <span class="success-total-amount" id="success-total">0đ</span>
+      </div>
+
+      <!-- ETA bar -->
+      <div class="success-eta-bar">
+        <div class="eta-step eta-done"><i class="fa-solid fa-circle-check"></i><span>Đã tiếp nhận</span></div>
+        <div class="eta-line"></div>
+        <div class="eta-step eta-active"><i class="fa-solid fa-fire-burner"></i><span>Đang chuẩn bị</span></div>
+        <div class="eta-line"></div>
+        <div class="eta-step"><i class="fa-solid fa-motorcycle"></i><span>Đang giao</span></div>
+        <div class="eta-line"></div>
+        <div class="eta-step"><i class="fa-solid fa-house"></i><span>Đã giao</span></div>
+      </div>
+
+      <!-- Actions -->
+      <div class="success-actions">
+        <button class="btn btn-outline" id="success-view-orders-btn">
+          <i class="fa-solid fa-receipt"></i> Xem Đơn Hàng
+        </button>
+        <button class="btn btn-primary" id="success-continue-btn">
+          <i class="fa-solid fa-utensils"></i> Tiếp Tục Mua Sắm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Custom JavaScript -->
+  <script src="js/app.js"></script>
+</body>
+</html>
