@@ -152,7 +152,7 @@ body.dark-mode ::-webkit-scrollbar-thumb {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
+/*them*/
 .text-danger {
   color: var(--danger) !important;
 }
