@@ -53,7 +53,7 @@ Frontend áp dụng cơ chế đồng bộ thông minh:
 
 ---
 
-## 3. CÁC TÍNH NĂNG NỔI BẬT KHÁC CỦA FRONTEND
+## 3. CÁC TÍNH NĂNG NỔI BẬT KHÁC CỦA FRONTENDg
 
 ### 1. Tích Hợp Bản Đồ Chọn Vị Trí (`delivery-map.html`)
 *   Sử dụng thư viện bản đồ mã nguồn mở **Leaflet** kết hợp dữ liệu bản đồ **OpenStreetMap**.
