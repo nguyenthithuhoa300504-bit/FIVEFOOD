@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIVEFOOD - Trang Quản Trị Hệ Thống</title>
+  
+  <!-- Google Fonts: Be Vietnam Pro (Vietnamese-optimized) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Admin Styling -->
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- ==================== SECURITY LOGIN OVERLAY (Shown if not admin) ==================== -->
+  <div class="admin-login-overlay" id="admin-login-overlay" style="display: none;">
+    <div class="admin-login-card">
+      <div class="login-icon-large">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+      <h2 class="login-title-large">Quản Trị FIVEFOOD</h2>
+      <p class="login-desc-large">Vui lòng đăng nhập bằng tài khoản Quản trị viên để truy cập trang quản trị hệ thống.</p>
+      
+      <form id="admin-login-form" class="login-form-large">
+        <div class="form-group">
+          <label class="form-label" for="admin-username">Tên đăng nhập</label>
+          <input type="text" id="admin-username" class="form-input" placeholder="Tên tài khoản admin..." required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="admin-password">Mật khẩu bảo mật</label>
+          <input type="password" id="admin-password" class="form-input" placeholder="Mật khẩu của bạn..." required autocomplete="current-password">
+        </div>
+        <button type="submit" class="login-btn-large" id="admin-login-btn">Đăng Nhập Quản Trị</button>
+      </form>
+      <a href="index.html" class="login-home-btn"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ mua sắm</a>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN DASHBOARD LAYOUT ==================== -->
+  <div class="app-container" id="admin-app-container">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo">
+          <div class="logo-icon-box">
+            <i class="fa-solid fa-bolt-lightning"></i>
+          </div>
+          <span class="brand-text">FIVE<span>FOOD</span></span>
+        </div>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li class="menu-item active" data-tab="dashboard">
+          <a class="menu-item-link">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Tổng Quan</span>
+          </a>
+        </li>
+        <li class="menu-item" data-tab="orders">
+          <a class="menu-item-link">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Quản Lý Đơn Hàng</span>
+          </a>
+        </li>
+        <li class="menu-item" data-tab="products">
+          <a class="menu-item-link">
+            <i class="fa-solid fa-hamburger"></i>
+            <span>Quản Lý Sản Phẩm</span>
+          </a>
+        </li>
+        <li class="menu-item" data-tab="categories">
+          <a class="menu-item-link">
+            <i class="fa-solid fa-folder-tree"></i>
+            <span>Danh Mục Món Ăn</span>
+          </a>
+        </li>
+        <li class="menu-item" data-tab="vouchers">
+          <a class="menu-item-link">
+            <i class="fa-solid fa-ticket"></i>
+            <span>Mã Khuyến Mãi</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <div class="admin-profile-card">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Admin Avatar" class="admin-avatar">
+          <div class="admin-info">
+            <span class="admin-name" id="admin-fullname-display">Quản Trị Viên</span>
+            <span class="admin-role">Super Admin</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content">
+      
+      <!-- TOP HEADER BAR -->
+      <header class="content-header">
+        <button class="sidebar-toggle-btn" id="sidebar-toggle" title="Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        
+        <div style="flex-grow: 1;"></div>
+        
+        <!-- Theme Mode Toggle -->
+        <button class="header-action-btn" id="theme-toggle-btn" title="Chuyển chế độ sáng/tối">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        
+        <!-- Store Link -->
+        <a href="index.html" class="header-action-btn" title="Xem Cửa Hàng">
+          <i class="fa-solid fa-shop"></i>
+        </a>
+        
+        <!-- Log Out -->
+        <button class="header-action-btn btn-logout" id="admin-logout-btn" title="Đăng Xuất">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </header>
+
+      <!-- ==================== TAB 1: OVERVIEW DASHBOARD ==================== -->
+      <section class="content-tab-section active" id="tab-dashboard">
+        <div class="page-title-row">
+          <h1 class="page-title">📊 Bảng Điều Khiển Tổng Quan</h1>
+          <p class="page-subtitle">Thống kê nhanh các chỉ số hoạt động kinh doanh trực tuyến hôm nay.</p>
+        </div>
+        
+        <!-- Stat Cards Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-left">
+              <span class="stat-title">Doanh thu thực tế</span>
+              <span class="stat-value" id="stat-revenue">0đ</span>
+            </div>
+            <div class="stat-card-icon success">
+              <i class="fa-solid fa-sack-dollar"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-left">
+              <span class="stat-title">Tổng số đơn hàng</span>
+              <span class="stat-value" id="stat-orders">0</span>
+            </div>
+            <div class="stat-card-icon warning">
+              <i class="fa-solid fa-truck-fast"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-left">
+              <span class="stat-title">Sản phẩm đang bán</span>
+              <span class="stat-value" id="stat-products">0</span>
+            </div>
+            <div class="stat-card-icon primary">
+              <i class="fa-solid fa-bowl-food"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-left">
+              <span class="stat-title">Khách hàng đăng ký</span>
+              <span class="stat-value" id="stat-users">0</span>
+            </div>
+            <div class="stat-card-icon danger">
+              <i class="fa-solid fa-user-astronaut"></i>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Dashboard details row -->
+        <div class="dashboard-grid">
+          <!-- Top products card -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-fire text-danger"></i> Top 5 Sản Phẩm Bán Chạy Nhất</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Ảnh</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Đơn Giá</th>
+                    <th>Đã Bán Ra</th>
+                  </tr>
+                </thead>
+                <tbody id="top-products-tbody">
+                  <!-- Skeleton dynamic content -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Quick Status Check Card -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-circle-nodes text-primary"></i> Trạng thái hệ thống</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; padding: 10px; background: var(--bg-primary); border-radius: 8px;">
+                <span class="text-secondary">Trạng thái Database</span>
+                <span class="text-success" style="font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Đang kết nối</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; padding: 10px; background: var(--bg-primary); border-radius: 8px;">
+                <span class="text-secondary">Cổng API Server</span>
+                <span style="font-weight: 600; color: var(--info);">Port 3000</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; padding: 10px; background: var(--bg-primary); border-radius: 8px;">
+                <span class="text-secondary">Giờ hệ thống</span>
+                <span id="system-time-display" style="font-weight: 600;">--:--:--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thống kê biểu đồ (Charts Section) -->
+        <div class="dashboard-grid" style="margin-top: 24px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+          <!-- Biểu đồ doanh thu & đơn hàng -->
+          <div class="dashboard-card" style="grid-column: span 2;">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-chart-line text-primary"></i> Thống kê Doanh thu & Đơn hàng (6 tháng gần nhất)</h3>
+            </div>
+            <div style="position: relative; height: 320px; width: 100%; margin-top: 10px;">
+              <canvas id="revenue-chart"></canvas>
+            </div>
+          </div>
+          
+          <!-- Biểu đồ trạng thái đơn hàng -->
+          <div class="dashboard-card" style="grid-column: span 1;">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-chart-pie text-success"></i> Trạng thái Đơn hàng</h3>
+            </div>
+            <div style="position: relative; height: 320px; width: 100%; margin-top: 10px; display: flex; justify-content: center; align-items: center;">
+              <canvas id="order-status-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid" style="margin-top: 24px; grid-template-columns: 1fr;">
+          <!-- Biểu đồ doanh thu theo danh mục -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-chart-bar text-warning"></i> Doanh thu theo Danh mục Món ăn</h3>
+            </div>
+            <div style="position: relative; height: 320px; width: 100%; margin-top: 10px;">
+              <canvas id="category-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==================== TAB 2: ORDER MANAGEMENT ==================== -->
+      <section class="content-tab-section" id="tab-orders">
+        <div class="page-title-row">
+          <h1 class="page-title">📋 Quản Lý Đơn Hàng (Hóa Đơn)</h1>
+          <p class="page-subtitle">Xem chi tiết hóa đơn đặt hàng và cập nhật tiến trình giao nhận đồ ăn.</p>
+        </div>
+        
+        <div class="table-filter-bar">
+          <div class="filter-left">
+            <div class="search-input-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="order-search-input" class="admin-search-input" placeholder="Tìm tên khách hàng, số điện thoại...">
+            </div>
+            <select id="order-status-filter" class="admin-select">
+              <option value="all">Tất cả trạng thái</option>
+              <option value="Chờ xác nhận">Chờ xác nhận</option>
+              <option value="Đang giao">Đang giao</option>
+              <option value="Hoàn thành">Hoàn thành</option>
+              <option value="Đã hủy">Đã hủy</option>
+            </select>
+          </div>
+          <div class="filter-right">
+            <button class="btn-admin btn-admin-outline" id="btn-refresh-orders"><i class="fa-solid fa-rotate"></i> Làm mới</button>
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Mã Đơn</th>
+                <th>Khách Hàng</th>
+                <th>Điện Thoại</th>
+                <th>Ngày Đặt</th>
+                <th>Tổng Cộng</th>
+                <th>Trạng Thái</th>
+                <th style="width: 130px; text-align: center;">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="pagination-row">
+          <div class="pagination-info" id="orders-pagination-info">Hiển thị đơn hàng 0 - 0 của 0</div>
+          <div class="pagination-controls" id="orders-pagination-controls">
+            <!-- Dynamic pagination btns -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 3: PRODUCT CRUD ==================== -->
+      <section class="content-tab-section" id="tab-products">
+        <div class="page-title-row">
+          <h1 class="page-title">🍔 Quản Lý Thực Đơn Sản Phẩm</h1>
+          <p class="page-subtitle">Thêm mới, thay đổi giá, điều chỉnh số lượng tồn kho của các món ăn.</p>
+        </div>
+        
+        <div class="table-filter-bar">
+          <div class="filter-left">
+            <div class="search-input-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="product-search-input" class="admin-search-input" placeholder="Tìm tên món ăn...">
+            </div>
+            <select id="product-category-filter" class="admin-select">
+              <option value="all">Tất cả danh mục</option>
+              <!-- Dynamic Category options -->
+            </select>
+          </div>
+          <div class="filter-right">
+            <button class="btn-admin btn-admin-primary" id="btn-open-add-product-modal">
+              <i class="fa-solid fa-plus"></i> Thêm Món Ăn Mới
+            </button>
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Mã</th>
+                <th style="width: 70px;">Ảnh</th>
+                <th>Tên Món Ăn</th>
+                <th>Danh Mục</th>
+                <th>Đơn Giá</th>
+                <th>Tồn Kho</th>
+                <th>Trạng Thái</th>
+                <th style="width: 110px; text-align: center;">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="products-table-body">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="pagination-row">
+          <div class="pagination-info" id="products-pagination-info">Hiển thị sản phẩm 0 - 0 của 0</div>
+          <div class="pagination-controls" id="products-pagination-controls">
+            <!-- Dynamic page buttons -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 4: CATEGORY CRUD ==================== -->
+      <section class="content-tab-section" id="tab-categories">
+        <div class="page-title-row">
+          <h1 class="page-title">📁 Quản Lý Danh Mục Món Ăn</h1>
+          <p class="page-subtitle">Phân loại món ăn theo các danh mục như Burger, Cơm, Nước uống, Tráng miệng...</p>
+        </div>
+        
+        <div class="table-filter-bar">
+          <div class="filter-left">
+            <!-- Filter or search can go here if needed -->
+          </div>
+          <div class="filter-right">
+            <button class="btn-admin btn-admin-primary" id="btn-open-add-category-modal">
+              <i class="fa-solid fa-plus"></i> Thêm Danh Mục Mới
+            </button>
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 80px;">Mã DM</th>
+                <th>Tên Danh Mục Món Ăn</th>
+                <th>Mô Tả</th>
+                <th style="width: 120px; text-align: center;">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="categories-table-body">
+              <!-- Dynamic rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 5: VOUCHER CRUD ==================== -->
+      <section class="content-tab-section" id="tab-vouchers">
+        <div class="page-title-row">
+          <h1 class="page-title">🎟️ Quản Lý Mã Khuyến Mãi (Vouchers)</h1>
+          <p class="page-subtitle">Tạo các chương trình ưu đãi giảm giá theo phần trăm hoặc số tiền cho khách hàng.</p>
+        </div>
+        
+        <div class="table-filter-bar">
+          <div class="filter-left">
+            <!-- Left filters if needed -->
+          </div>
+          <div class="filter-right">
+            <button class="btn-admin btn-admin-primary" id="btn-open-add-voucher-modal">
+              <i class="fa-solid fa-plus"></i> Tạo Mã Giảm Giá Mới
+            </button>
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Mã Code</th>
+                <th>Mô Tả Chương Trình</th>
+                <th>Giá Trị Giảm</th>
+                <th>Đơn Tối Thiểu</th>
+                <th>Số Lượng</th>
+                <th>Hạn Sử Dụng</th>
+                <th>Trạng Thái</th>
+                <th style="width: 110px; text-align: center;">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="vouchers-table-body">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==================== MODAL: ADD/EDIT PRODUCT ==================== -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="product-modal-title">Thêm Sản Phẩm Món Ăn Mới</h3>
+        <span class="modal-close-btn" id="product-modal-close"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <form id="product-form">
+        <input type="hidden" id="product-form-id">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label class="form-label" for="product-name">Tên món ăn <span class="text-danger">*</span></label>
+              <input type="text" id="product-name" class="form-input" placeholder="Ví dụ: Cơm gà Hải Nam đặc biệt" required>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="product-category">Danh mục món ăn <span class="text-danger">*</span></label>
+              <select id="product-category" class="admin-select" style="width: 100%;" required>
+                <!-- Filled dynamically -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="product-price">Giá bán (VNĐ) <span class="text-danger">*</span></label>
+              <input type="number" id="product-price" class="form-input" placeholder="Ví dụ: 45000" min="0" required>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="product-stock">Số lượng tồn kho <span class="text-danger">*</span></label>
+              <input type="number" id="product-stock" class="form-input" placeholder="Ví dụ: 50" min="0" required>
+            </div>
+            <div class="form-group" style="justify-content: center; padding-top: 10px;">
+              <div class="switch-wrapper">
+                <label class="switch">
+                  <input type="checkbox" id="product-status" checked>
+                  <span class="slider"></span>
+                </label>
+                <span class="form-label">Kích hoạt bán ngay</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-grid single">
+            <div class="form-group">
+              <label class="form-label" for="product-image">Đường dẫn hình ảnh (URL)</label>
+              <input type="url" id="product-image" class="form-input" placeholder="https://images.unsplash.com/... hoặc tên file">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="product-desc">Mô tả chi tiết món ăn</label>
+              <textarea id="product-desc" class="form-textarea" placeholder="Thành phần nguyên liệu, cách chế biến, hương vị đặc sắc..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-admin btn-admin-outline" id="btn-cancel-product">Hủy Bỏ</button>
+          <button type="submit" class="btn-admin btn-admin-primary" id="btn-save-product">Lưu Thông Tin</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ADD/EDIT CATEGORY ==================== -->
+  <div class="modal-overlay" id="category-modal">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="category-modal-title">Thêm Danh Mục Món Ăn</h3>
+        <span class="modal-close-btn" id="category-modal-close"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <form id="category-form">
+        <input type="hidden" id="category-form-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="category-name">Tên danh mục <span class="text-danger">*</span></label>
+            <input type="text" id="category-name" class="form-input" placeholder="Ví dụ: Burger, Lẩu, Tráng miệng..." required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="category-desc">Mô tả danh mục</label>
+            <textarea id="category-desc" class="form-textarea" placeholder="Ví dụ: Các món gà chiên giòn, nướng mật ong thơm lừng..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-admin btn-admin-outline" id="btn-cancel-category">Hủy</button>
+          <button type="submit" class="btn-admin btn-admin-primary" id="btn-save-category">Lưu Danh Mục</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ADD/EDIT VOUCHER ==================== -->
+  <div class="modal-overlay" id="voucher-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="voucher-modal-title">Tạo Chương Trình Khuyến Mãi Mới</h3>
+        <span class="modal-close-btn" id="voucher-modal-close"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <form id="voucher-form">
+        <input type="hidden" id="voucher-form-id">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="voucher-code">Mã khuyến mãi (Viết liền hoa) <span class="text-danger">*</span></label>
+              <input type="text" id="voucher-code" class="form-input" placeholder="Ví dụ: ANVAT30, GIAM20K" style="text-transform: uppercase;" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="voucher-name">Tên chương trình ưu đãi <span class="text-danger">*</span></label>
+              <input type="text" id="voucher-name" class="form-input" placeholder="Ví dụ: Giảm ngay 20k cho đơn từ 100k" required>
+            </div>
+          </div>
+          
+          <div style="background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+            <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;">Cấu hình giá trị ưu đãi</p>
+            <div class="form-grid" style="margin-bottom: 0;">
+              <div class="form-group">
+                <label class="form-label" for="voucher-percent">Phần trăm giảm (%)</label>
+                <input type="number" id="voucher-percent" class="form-input" placeholder="0 - 100" min="0" max="100" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="voucher-cash">Số tiền giảm cố định (đ)</label>
+                <input type="number" id="voucher-cash" class="form-input" placeholder="Đặt là 0 nếu giảm theo %" min="0" value="0">
+              </div>
+            </div>
+            <small style="color: var(--text-muted); display: block; margin-top: 8px; font-size: 0.75rem;"><i class="fa-solid fa-circle-info"></i> Hệ thống ưu tiên áp dụng phần trăm giảm trước. Nếu phần trăm giảm là 0, sẽ giảm số tiền cố định.</small>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="voucher-min-val">Đơn hàng tối thiểu cần (đ)</label>
+              <input type="number" id="voucher-min-val" class="form-input" placeholder="Ví dụ: 100000" min="0" value="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="voucher-qty">Số lượng mã phát hành <span class="text-danger">*</span></label>
+              <input type="number" id="voucher-qty" class="form-input" placeholder="Ví dụ: 100" min="0" required>
+              <small id="voucher-qty-hint" style="color:#f97316;font-size:12px;margin-top:4px;display:none;">
+                ⚠️ Nhập 0 sẽ đặt mã này thành trạng thái <strong>Hết lượt</strong> (khách hàng không thể sử dụng).
+              </small>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="voucher-start">Ngày bắt đầu hiệu lực <span class="text-danger">*</span></label>
+              <input type="datetime-local" id="voucher-start" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="voucher-end">Ngày kết thúc hiệu lực <span class="text-danger">*</span></label>
+              <input type="datetime-local" id="voucher-end" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="padding-top: 8px;">
+            <div class="switch-wrapper">
+              <label class="switch">
+                <input type="checkbox" id="voucher-status" checked>
+                <span class="slider"></span>
+              </label>
+              <span class="form-label">Kích hoạt mã khuyến mãi</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-admin btn-admin-outline" id="btn-cancel-voucher">Hủy Bỏ</button>
+          <button type="submit" class="btn-admin btn-admin-primary" id="btn-save-voucher">Tạo Mã Giảm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: VIEW ORDER DETAILS ==================== -->
+  <div class="modal-overlay" id="order-modal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title" id="order-modal-title">Chi Tiết Đơn Hàng #HD00</h3>
+        <span class="modal-close-btn" id="order-modal-close"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Meta Details Box -->
+        <div class="order-detail-meta">
+          <div class="meta-item">
+            <span class="meta-title">Khách Hàng Đặt</span>
+            <span class="meta-value" id="order-detail-customer">Đang tải...</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-title">Điện Thoại</span>
+            <span class="meta-value" id="order-detail-phone">Đang tải...</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-title">Ngày Đặt Hàng</span>
+            <span class="meta-value" id="order-detail-date">Đang tải...</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-title">Trạng Thái Đơn</span>
+            <span class="meta-value" id="order-detail-status-badge">--</span>
+          </div>
+        </div>
+
+        <div style="background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; margin-bottom: 24px;">
+          <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">Địa Chỉ Giao Nhận Hàng</p>
+          <p id="order-detail-address" style="font-weight: 500; font-size: 0.95rem; color: var(--text-primary);">Đang tải...</p>
+          
+          <hr style="border: none; border-top: 1px solid var(--border-color); margin: 12px 0;">
+          
+          <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Ghi Chú Đơn Hàng</p>
+          <p id="order-detail-note" style="font-size: 0.9rem; color: var(--text-secondary); font-style: italic;">Đang tải...</p>
+        </div>
+        
+        <!-- Items List -->
+        <h4 class="order-items-title"><i class="fa-solid fa-utensils text-primary"></i> Danh Sách Món Ăn Đã Đặt</h4>
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Ảnh</th>
+                <th>Món Ăn</th>
+                <th>Số Lượng</th>
+                <th>Đơn Giá</th>
+                <th style="text-align: right;">Thành Tiền</th>
+              </tr>
+            </thead>
+            <tbody id="order-items-tbody">
+              <!-- Dynamic rows -->
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Pricing Summary -->
+        <div class="order-summary-box">
+          <div class="summary-row">
+            <span class="text-secondary">Tạm tính tiền hàng:</span>
+            <span id="order-summary-subtotal" style="font-weight: 600;">0đ</span>
+          </div>
+          <div class="summary-row text-success" id="order-summary-discount-row" style="display: none;">
+            <span class="text-success" id="order-summary-discount-label">Mã KM:</span>
+            <span id="order-summary-discount">-0đ</span>
+          </div>
+          <div class="summary-row">
+            <span class="text-secondary">Phí vận chuyển giao hàng:</span>
+            <span>15.000đ</span>
+          </div>
+          <div class="summary-row">
+            <span class="text-secondary">Phương thức thanh toán:</span>
+            <span id="order-summary-payment-method" style="font-weight: 600;">Tiền mặt</span>
+          </div>
+          <div class="summary-row">
+            <span class="text-secondary">Trạng thái thanh toán:</span>
+            <span id="order-summary-payment-status" style="font-weight: 700;">Chưa thanh toán</span>
+          </div>
+          <div class="summary-row total">
+            <span>Tổng thanh toán:</span>
+            <span id="order-summary-total">0đ</span>
+          </div>
+        </div>
+
+        <!-- Order Status Update Area (Admin Action) -->
+        <div style="background-color: var(--primary-glow); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 12px; padding: 20px; margin-top: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+          <div>
+            <h4 style="font-weight: 700; font-size: 1rem; color: var(--text-primary);"><i class="fa-solid fa-pen-nib"></i> Cập Nhật Tiến Độ Giao Hàng</h4>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 2px;">Cập nhật sang trạng thái tương ứng để thông báo tới khách hàng và shipper.</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <select id="modal-order-status-select" class="admin-select" style="min-width: 160px; height: 42px;">
+              <option value="Chờ xác nhận">Chờ xác nhận</option>
+              <option value="Đang giao">Đang giao</option>
+              <option value="Hoàn thành">Hoàn thành</option>
+              <option value="Đã hủy">Đã hủy</option>
+            </select>
+            <button class="btn-admin btn-admin-primary" id="btn-update-order-status" style="height: 42px;">
+              <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ChartJS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Admin Control Script -->
+  <script src="js/admin.js"></script>
+</body>
+</html>
+
