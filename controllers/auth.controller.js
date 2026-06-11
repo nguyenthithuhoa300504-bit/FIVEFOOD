@@ -48,15 +48,18 @@ const login = async (req, res) => {
       VaiTroID: user.VaiTroID
     };
 
-    // Secret key lấy từ process.env.JWT_SECRET, hết hạn sau 2 giờ
+    // Secret key lấy từ process.env.JWT_SECRET, hết hạn sau 24 giờ
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: '24h'
     });
 
-    // 6. Trả về kết quả JSON gồm message thành công và token
+    // 6. Trả về kết quả JSON gồm message thành công, token và thông tin user
+    // (bỏ MatKhauHash ra khỏi response để bảo mật)
+    const { MatKhauHash: userPasswordHash, ...userInfo } = user;
     return res.status(200).json({
       message: 'Đăng nhập thành công',
-      token: token
+      token: token,
+      user: userInfo
     });
 
   } catch (error) {

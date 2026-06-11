@@ -535,7 +535,14 @@ async function fetchPromotions() {
     if (!res.ok) throw new Error('Cannot fetch promotions');
     const promotions = await res.json();
 
-    if (promotions.length === 0) {
+    const now = new Date();
+    // Lọc bỏ các mã giảm giá đã hết hạn
+    const activePromotions = promotions.filter(p => {
+      const end = new Date(p.NgayKetThuc);
+      return now <= end;
+    });
+
+    if (activePromotions.length === 0) {
       DOM.promotionsContainer.innerHTML = `
         <div class="empty-cart-view" style="grid-column: 1/-1; padding: 20px;">
           <i class="fa-solid fa-gift" style="font-size: 38px; color: #cbd5e1; margin-bottom: 10px;"></i>
@@ -547,9 +554,7 @@ async function fetchPromotions() {
 
     DOM.promotionsContainer.innerHTML = '';
 
-    const now = new Date();
-
-    promotions.forEach(p => {
+    activePromotions.forEach(p => {
       const start = new Date(p.NgayBatDau);
       const end = new Date(p.NgayKetThuc);
 
@@ -2346,13 +2351,13 @@ async function loadOrderDetails(orderId) {
 
     // Button: Theo dõi đơn hàng (if status is NOT Đã hủy)
     if (details.TrangThai !== 'Đã hủy') {
-      const trackBtn = document.createElement('button');
+      const trackBtn = document.createElement('a');
       trackBtn.className = 'btn btn-primary';
-      trackBtn.style.cssText = 'padding:8px 18px; font-size:13.5px;';
-      trackBtn.innerHTML = '<i class="fa-solid fa-location-dot"></i> Theo dõi đơn hàng';
+      trackBtn.style.cssText = 'padding:8px 18px; font-size:13.5px; display:inline-flex; align-items:center; justify-content:center; text-decoration:none;';
+      trackBtn.href = `/track-order.html?id=${orderId}`;
+      trackBtn.innerHTML = '<i class="fa-solid fa-location-dot" style="margin-right:6px;"></i> Theo dõi đơn hàng';
       trackBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        window.open(`track-order.html?id=${orderId}`, '_blank');
       });
       actionsWrapper.appendChild(trackBtn);
     }

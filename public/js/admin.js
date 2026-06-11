@@ -326,7 +326,7 @@ DOM.adminLoginForm.addEventListener('submit', async (e) => {
   loginBtn.setAttribute('disabled', 'true');
   
   try {
-    const res = await fetch('/api/login', {
+    const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -1006,9 +1006,60 @@ window.openOrderDetailModal = async function(orderId) {
     
     DOM.orderSummaryTotal.textContent = formatPrice(order.TongTien);
     
-    // Order Status Select
-    DOM.modalOrderStatusSelect.value = order.TrangThai;
-    
+    // Order Status Select — Chỉ Admin được chuyển Chờ xác nhận → Đang giao
+    // Luôn chọn sẵn "Đang giao" khi đơn đang "Chờ xác nhận"
+    if (order.TrangThai === 'Chờ xác nhận') {
+      DOM.modalOrderStatusSelect.value = 'Đang giao';
+    } else {
+      DOM.modalOrderStatusSelect.value = order.TrangThai;
+    }
+
+    // Kiểm tra trạng thái đơn hàng để enable/disable khu vực cập nhật
+    // Admin chỉ được thao tác khi đơn đang "Chờ xác nhận"
+    const canAdminAct = order.TrangThai === 'Chờ xác nhận';
+    const statusUpdateArea = DOM.btnUpdateOrderStatus.closest('div[style]');
+
+    // Xóa hint cũ trước khi hiển thị mới
+    if (statusUpdateArea) {
+      const oldHint = statusUpdateArea.querySelector('.status-hint-msg');
+      if (oldHint) oldHint.remove();
+      const oldActionHint = statusUpdateArea.querySelector('.status-action-hint');
+      if (oldActionHint) oldActionHint.remove();
+    }
+
+    if (canAdminAct) {
+      // Đơn đang chờ — Admin có thể xác nhận shipper giao hàng
+      DOM.modalOrderStatusSelect.removeAttribute('disabled');
+      DOM.btnUpdateOrderStatus.removeAttribute('disabled');
+      DOM.btnUpdateOrderStatus.style.opacity = '';
+      DOM.btnUpdateOrderStatus.style.cursor = '';
+      DOM.btnUpdateOrderStatus.title = 'Xác nhận shipper đã nhận hàng và đang giao';
+      if (statusUpdateArea) {
+        const hintEl = document.createElement('p');
+        hintEl.className = 'status-action-hint';
+        hintEl.style.cssText = 'font-size:0.82rem; color:var(--text-secondary); margin-top:8px; width:100%; line-height:1.5;';
+        hintEl.innerHTML = '👉 Nhấn <b>Xác nhận giao</b> để thông báo shipper đã nhận hàng và bắt đầu vận chuyển đến khách.';
+        statusUpdateArea.appendChild(hintEl);
+      }
+    } else {
+      // Đơn đang giao hoặc đã kết thúc — Admin không thể thao tác thêm
+      DOM.modalOrderStatusSelect.setAttribute('disabled', 'true');
+      DOM.btnUpdateOrderStatus.setAttribute('disabled', 'true');
+      DOM.btnUpdateOrderStatus.style.opacity = '0.5';
+      DOM.btnUpdateOrderStatus.style.cursor = 'not-allowed';
+      if (statusUpdateArea) {
+        const msg = document.createElement('p');
+        msg.className = 'status-hint-msg';
+        msg.style.cssText = 'font-size:0.82rem; color:var(--text-muted); margin-top:8px; width:100%; text-align:center; line-height:1.5;';
+        if (order.TrangThai === 'Đang giao') {
+          msg.innerHTML = `<i class="fa-solid fa-motorcycle" style="color:var(--info)"></i> Shipper đang trên đường — <b>Khách hàng</b> sẽ xác nhận Hoàn thành / Trả hàng khi shipper đến nơi.`;
+        } else {
+          msg.innerHTML = `<i class="fa-solid fa-lock"></i> Đơn hàng đã <strong>${order.TrangThai}</strong> — không thể thay đổi trạng thái.`;
+        }
+        statusUpdateArea.appendChild(msg);
+      }
+    }
+
   } catch (err) {
     console.error('Lỗi lấy chi tiết đơn:', err);
     showToast('Không thể kết nối máy chủ tải chi tiết đơn!', 'error');

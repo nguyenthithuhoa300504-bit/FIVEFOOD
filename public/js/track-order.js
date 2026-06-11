@@ -258,6 +258,42 @@ async function initTrackingMap(order) {
     iconAnchor: [22, 22]
   });
 
+  // ── TRƯỜNG HỢP: Đơn hàng đang CHỜ XÁC NHẬN ──
+  // Hiển thị shipper tại nhà hàng, chờ Admin xác nhận — KHÔNG chạy animation
+  if (order.TrangThai === 'Chờ xác nhận') {
+    shipperMarker = L.marker(storeLatLng, { icon: shipperIcon })
+      .bindPopup('<b>🛵 Shipper</b><br>Đang chờ Admin xác nhận đơn hàng...')
+      .addTo(map)
+      .openPopup();
+
+    document.getElementById('eta-container').style.display = 'block';
+    document.getElementById('shipper-info-box').style.display = 'flex';
+    document.getElementById('eta-time-label').textContent = 'Đang chờ...';
+    document.getElementById('eta-distance-label').textContent = 'Đơn hàng đang chờ nhà hàng xác nhận';
+
+    // Hiển thị đường route (nét đứt mờ) để khách thấy lộ trình dự kiến
+    try {
+      const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${storeLatLng[1]},${storeLatLng[0]};${customerLatLng[1]},${customerLatLng[0]}?overview=full&geometries=geojson`;
+      const routeRes = await fetch(osrmUrl);
+      if (routeRes.ok) {
+        const routeData = await routeRes.json();
+        if (routeData.routes && routeData.routes.length > 0) {
+          const coords = routeData.routes[0].geometry.coordinates;
+          const rawPoints = coords.map(c => [c[1], c[0]]);
+          routeLine = L.polyline(rawPoints, {
+            color: '#ff5722',
+            weight: 4,
+            opacity: 0.35,
+            dashArray: '8, 10'
+          }).addTo(map);
+        }
+      }
+    } catch (err) {
+      console.warn('Không thể tải lộ trình dự kiến:', err);
+    }
+    return; // Dừng tại đây — không chạy animation
+  }
+
   // Calculate overall straight line distance in meters initially
   let totalDistMeters = calculateDistance(storeLatLng[0], storeLatLng[1], customerLatLng[0], customerLatLng[1]);
   
@@ -311,7 +347,8 @@ async function initTrackingMap(order) {
     document.getElementById('eta-time-label').textContent = 'Đã giao!';
     document.getElementById('eta-distance-label').textContent = 'Shipper đã đến điểm giao hàng.';
     updateTimelineStatus('Hoàn thành');
-  } else {
+  } else if (order.TrangThai === 'Đang giao') {
+    // ── TRƯỜNG HỢP: ĐƠN ĐANG GIAO — chạy animation shipper di chuyển ──
     // ── RESUME FROM SAVED PROGRESS ──
     // If user left and came back, calculate how far shipper has already gone
     const storageKey = `fe_track_start_${order.HoaDonID}`;
@@ -377,11 +414,8 @@ function simulateShipperMove(totalDist, customerCoords, shipperIcon, orderId, st
     document.getElementById('eta-time-label').textContent = `${minutesRemaining} phút`;
     document.getElementById('eta-distance-label').textContent = `Shipper cách bạn ${distRemaining} m`;
 
-    // Dynamic timeline status updates
-    if (percentDone < 0.15) {
-      updateTimelineStatus('Chờ xác nhận');
-      document.getElementById('step-dang-chuan-bi').className = 'timeline-item active';
-    } else if (percentDone >= 0.15 && percentDone < 0.95) {
+    // Dynamic timeline status updates — Đơn đang giao: luôn hiển thị "Đang giao"
+    if (percentDone < 0.95) {
       updateTimelineStatus('Đang giao');
     } else if (percentDone >= 0.95) {
       // Shipper đã đến nơi — hiện modal xác nhận thay vì tự động hoàn thành

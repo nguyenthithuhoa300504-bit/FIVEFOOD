@@ -154,6 +154,7 @@ const getAllHoaDon = async (req, res) => {
         hd.TrangThai,
         hd.DiaChiNhan,
         hd.SoDienThoaiNhan,
+        hd.GhiChu,
         hd.NgayDat,
         tt.PhuongThuc,
         tt.TrangThaiThanhToan,
@@ -289,9 +290,11 @@ const getHoaDonById = async (req, res) => {
 /**
  * PUT /api/hoadon/:id/trangthai
  * Cập nhật trạng thái hóa đơn.
- * Quy định phân quyền:
- * - Admin: Có quyền thay đổi sang bất kỳ trạng thái hợp lệ nào ('Chờ xác nhận', 'Đang giao', 'Hoàn thành', 'Đã hủy').
- * - Khách hàng: Chỉ có quyền Hủy đơn hàng ('Đã hủy') khi đơn hàng đang ở trạng thái 'Chờ xác nhận'.
+ * Quy định phân quyền theo luồng nghiệp vụ:
+ * - Admin: Chỉ được chuyển từ 'Chờ xác nhận' → 'Đang giao' (xác nhận shipper đã nhận hàng).
+ * - Khách hàng: Xác nhận kết quả giao hàng khi shipper đến nơi:
+ *     + 'Đang giao' → 'Hoàn thành' (lấy hàng thành công)
+ *     + 'Đang giao' → 'Đã hủy' (từ chối / trả lại hàng)
  * 
  * Lưu ý: Khi trạng thái hóa đơn cập nhật sang 'Đã hủy', Database Triggers (trg_HoaDon_UpdateStatus) sẽ tự động kích hoạt:
  * 1. Hoàn lại tồn kho cho các sản phẩm trong chi tiết hóa đơn.
@@ -331,7 +334,20 @@ const updateTrangThai = async (req, res) => {
     const currentInvoice = checkResult.recordset[0];
 
     // 2. Kiểm tra phân quyền cập nhật trạng thái
-    if (!isAdmin) {
+    if (isAdmin) {
+      // Admin chỉ được phép chuyển từ "Chờ xác nhận" → "Đang giao"
+      // (xác nhận shipper đã nhận hàng và bắt đầu vận chuyển)
+      if (TrangThai !== 'Đang giao') {
+        return res.status(403).json({
+          message: 'Admin chỉ có quyền xác nhận đơn hàng sang trạng thái "Đang giao". Trạng thái "Hoàn thành" và "Đã hủy" do khách hàng xác nhận khi nhận hàng.'
+        });
+      }
+      if (currentInvoice.TrangThai !== 'Chờ xác nhận') {
+        return res.status(400).json({
+          message: `Chỉ có thể xác nhận giao hàng khi đơn đang ở trạng thái "Chờ xác nhận". Trạng thái hiện tại: "${currentInvoice.TrangThai}".`
+        });
+      }
+    } else {
       // Khách hàng thông thường — chỉ được cập nhật đơn hàng của chính mình
       if (currentInvoice.NguoiDungID !== currentUserId) {
         return res.status(403).json({
@@ -339,27 +355,18 @@ const updateTrangThai = async (req, res) => {
         });
       }
 
-      // Khách hàng chỉ được phép:
-      // - Hủy đơn (Đã hủy) khi đơn đang Chờ xác nhận
-      // - Hoàn thành đơn (Hoàn thành) khi đơn đang Đang giao (hệ thống simulation tự động)
-      if (TrangThai === 'Đã hủy') {
-        // Cho phép hủy khi đơn đang "Chờ xác nhận" (hủy chủ động)
-        // hoặc khi đơn đang "Đang giao" (trả lại hàng khi shipper đến nơi)
-        if (currentInvoice.TrangThai !== 'Chờ xác nhận' && currentInvoice.TrangThai !== 'Đang giao') {
+      // Khách hàng chỉ được xác nhận kết quả khi shipper đến nơi (trạng thái "Đang giao"):
+      // - "Hoàn thành": lấy hàng thành công
+      // - "Đã hủy": từ chối / trả lại hàng
+      if (TrangThai === 'Hoàn thành' || TrangThai === 'Đã hủy') {
+        if (currentInvoice.TrangThai !== 'Đang giao') {
           return res.status(400).json({
-            message: `Không thể hủy đơn hàng này. Trạng thái hiện tại: "${currentInvoice.TrangThai}".`
-          });
-        }
-      } else if (TrangThai === 'Ho\u00e0n th\u00e0nh') {
-        // Cho phép user hoàn thành đơn khi đang "Chờ xác nhận" hoặc "Đang giao"
-        if (currentInvoice.TrangThai !== 'Chờ xác nhận' && currentInvoice.TrangThai !== 'Đang giao') {
-          return res.status(400).json({
-            message: `Không thể hoàn thành đơn hàng ở trạng thái hiện tại: "${currentInvoice.TrangThai}".`
+            message: `Chỉ có thể xác nhận nhận/trả hàng khi đơn đang ở trạng thái "Đang giao". Trạng thái hiện tại: "${currentInvoice.TrangThai}".`
           });
         }
       } else {
         return res.status(403).json({
-          message: 'Bạn không có quyền thay đổi trạng thái này. Chỉ Admin mới có thể thay đổi trạng thái khác.'
+          message: 'Bạn chỉ có thể xác nhận "Hoàn thành" hoặc "Đã hủy" khi shipper đã đến nơi giao hàng.'
         });
       }
     }
