@@ -12,6 +12,8 @@ let currentToken = localStorage.getItem('fe_token') || null;
 let currentOrderFilter = 'all';
 let userOrders = [];
 let favorites = JSON.parse(localStorage.getItem('fe_favorites')) || [];
+let currentProductsPage = 1;
+const productsLimit = 8;
 
 // dbCart: lưu mapping SanPhamID -> ChiTietGioHangID (chỉ dùng khi đăng nhập)
 // Ví dụ: { 5: 12, 8: 15 } => Sản phẩm ID 5 có ChiTietGioHangID là 12
@@ -53,6 +55,7 @@ const DOM = {
   promotionsContainer: document.getElementById('promotions-container'),
   categoryTabsContainer: document.getElementById('category-tabs-container'),
   productsContainer: document.getElementById('products-container'),
+  paginationContainer: document.getElementById('pagination-container'),
 
   // Product Detail Modal
   productModal: document.getElementById('product-modal'),
@@ -661,13 +664,14 @@ window.copyVoucher = function (e, code) {
 };
 
 // Fetch products (All or by Category)
-async function fetchProducts(categoryId = null) {
+async function fetchProducts(categoryId = null, page = 1) {
   try {
+    currentProductsPage = page;
     // Show skeletons
     DOM.productsContainer.innerHTML = Array(6).fill('<div class="skeleton-card product-skeleton"></div>').join('');
 
-    let url = '/api/sanpham';
-    if (categoryId) {
+    let url = `/api/sanpham?page=${page}&limit=${productsLimit}`;
+    if (categoryId && categoryId !== 'all') {
       url = `/api/sanpham/danhmuc/${categoryId}`;
     }
 
@@ -675,8 +679,24 @@ async function fetchProducts(categoryId = null) {
     if (!res.ok) throw new Error('Cannot fetch products');
     const responseData = await res.json();
 
-    // Handle the dual schema returned by getAllProducts (could be object with .data or raw array)
-    const products = Array.isArray(responseData) ? responseData : responseData.data;
+    let products = [];
+
+    if (Array.isArray(responseData)) {
+      products = responseData;
+      if (DOM.paginationContainer) {
+        DOM.paginationContainer.style.display = 'none';
+        DOM.paginationContainer.innerHTML = '';
+      }
+    } else if (responseData && responseData.data) {
+      products = responseData.data;
+      renderPagination(responseData.currentPage, responseData.totalPages, categoryId);
+    } else {
+      products = [];
+      if (DOM.paginationContainer) {
+        DOM.paginationContainer.style.display = 'none';
+        DOM.paginationContainer.innerHTML = '';
+      }
+    }
 
     renderProductsList(products);
 
@@ -686,11 +706,94 @@ async function fetchProducts(categoryId = null) {
       <div class="empty-cart-view" style="grid-column: 1/-1; padding: 40px; color: var(--danger)">
         <i class="fa-solid fa-triangle-exclamation" style="font-size: 48px; margin-bottom: 10px;"></i>
         <p>Lỗi kết nối máy chủ API Sản phẩm.</p>
-        <button onclick="fetchProducts(${categoryId})" class="btn btn-outline btn-sm m-t-20">Thử lại</button>
+        <button onclick="fetchProducts(${categoryId ? `'${categoryId}'` : null}, ${page})" class="btn btn-outline btn-sm m-t-20">Thử lại</button>
       </div>
     `;
   }
 }
+
+/**
+ * Render bộ nút phân trang động
+ */
+function renderPagination(currentPage, totalPages, categoryId = null) {
+  const container = DOM.paginationContainer;
+  if (!container) return;
+
+  if (totalPages <= 1) {
+    container.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+
+  container.style.display = 'flex';
+  let html = '';
+
+  // Nút Trang trước (Previous)
+  const prevDisabled = currentPage === 1 ? 'disabled' : '';
+  const prevClick = currentPage === 1 ? '' : `onclick="changePage(${currentPage - 1}, ${categoryId ? `'${categoryId}'` : 'null'})"`;
+  html += `
+    <button class="pagination-btn ${prevDisabled}" ${prevClick} title="Trang trước">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+  `;
+
+  // Các nút số trang
+  const maxVisiblePages = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+  if (endPage - startPage + 1 < maxVisiblePages) {
+    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+  }
+
+  if (startPage > 1) {
+    html += `<button class="pagination-btn" onclick="changePage(1, ${categoryId ? `'${categoryId}'` : 'null'})">1</button>`;
+    if (startPage > 2) {
+      html += `<span class="pagination-btn dots">...</span>`;
+    }
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    const activeClass = i === currentPage ? 'active' : '';
+    html += `
+      <button class="pagination-btn ${activeClass}" onclick="changePage(${i}, ${categoryId ? `'${categoryId}'` : 'null'})">
+        ${i}
+      </button>
+    `;
+  }
+
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) {
+      html += `<span class="pagination-btn dots">...</span>`;
+    }
+    html += `<button class="pagination-btn" onclick="changePage(${totalPages}, ${categoryId ? `'${categoryId}'` : 'null'})">${totalPages}</button>`;
+  }
+
+  // Nút Trang sau (Next)
+  const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+  const nextClick = currentPage === totalPages ? '' : `onclick="changePage(${currentPage + 1}, ${categoryId ? `'${categoryId}'` : 'null'})"`;
+  html += `
+    <button class="pagination-btn ${nextDisabled}" ${nextClick} title="Trang sau">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  `;
+
+  container.innerHTML = html;
+}
+
+/**
+ * Xử lý khi người dùng chọn chuyển trang
+ */
+window.changePage = function (page, categoryId = null) {
+  fetchProducts(categoryId, page);
+  // Cuộn mượt lên phần thực đơn
+  const menuSection = document.getElementById('menu-section');
+  if (menuSection) {
+    const yOffset = -90; // offset for sticky header
+    const y = menuSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+};
 
 // Render dynamic products list
 function renderProductsList(products) {
@@ -796,6 +899,10 @@ function searchProducts(keyword) {
     })
     .then(products => {
       renderProductsList(products);
+      if (DOM.paginationContainer) {
+        DOM.paginationContainer.style.display = 'none';
+        DOM.paginationContainer.innerHTML = '';
+      }
       DOM.searchStatusText.innerHTML = `Tìm thấy <strong>${products.length}</strong> kết quả cho: "<strong>${keyword.trim()}</strong>"`;
     })
     .catch(err => {

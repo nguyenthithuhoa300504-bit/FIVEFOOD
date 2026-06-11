@@ -8,7 +8,7 @@ const { sql } = require('../config/db.config');
 const getAllProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 8;
 
     const request = new sql.Request();
 
@@ -24,7 +24,7 @@ const getAllProducts = async (req, res) => {
       const paginatedRequest = new sql.Request();
       paginatedRequest.input('Offset', sql.Int, offset);
       paginatedRequest.input('Limit', sql.Int, limit);
-      
+
       const result = await paginatedRequest.query(`
         SELECT 
           s.SanPhamID, s.DanhMucID, s.TenSanPham, s.Gia, s.SoLuongTon, s.HinhAnh, s.MoTa, s.TrangThai, s.NgayTao, d.TenDanhMuc,
@@ -325,7 +325,7 @@ const getProductsByCategory = async (req, res) => {
 const searchProducts = async (req, res) => {
   try {
     const { q } = req.query;
-    
+
     if (!q || q.trim() === '') {
       return res.status(400).json({
         message: 'Từ khóa tìm kiếm (q) không được để trống'

@@ -4090,3 +4090,66 @@ body.dark-mode .order-success-card {
   color: var(--text-muted);
   font-weight: 400;
 }
+
+/* ==========================================================================
+   PAGINATION STYLES
+   ========================================================================== */
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-card);
+  color: var(--text-dark);
+  font-weight: 600;
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.pagination-btn:hover {
+  background-color: rgba(255, 87, 34, 0.08);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.pagination-btn.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+  box-shadow: var(--shadow-glow);
+}
+
+.pagination-btn.disabled {
+  background-color: var(--bg-body);
+  border-color: var(--glass-border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.pagination-btn.dots {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--text-muted);
+  cursor: default;
+  box-shadow: none;
+  pointer-events: none;
+  min-width: 30px;
+}
