@@ -1,11 +1,11 @@
-# CHI TIẾT NỘI DUNG SLIDE BÁO CÁO DỰ ÁN FOODEXPRESS (CHÍNH XÁC THEO CODE)
+# CHI TIẾT NỘI DUNG SLIDE BÁO CÁO DỰ ÁN FIVEFOOD (CHÍNH XÁC THEO CODE)
 
 Tài liệu này cung cấp nội dung chi tiết từng slide, sử dụng chính xác tên bảng, cột, hàm, API route, Stored Procedure và Trigger từ mã nguồn của dự án của bạn để bạn đưa vào slide báo cáo.
 
 ---
 
 ### Slide 1: Trang tiêu đề (Title Slide)
-*   **Tiêu đề chính**: DỰ ÁN XÂY DỰNG WEBSITE ĐẶT ĐỒ ĂN TRỰC TUYẾN FOODEXPRESS
+*   **Tiêu đề chính**: DỰ ÁN XÂY DỰNG WEBSITE ĐẶT ĐỒ ĂN TRỰC TUYẾN FIVEFOOD
 *   **Mô tả**: Hệ thống đặt món ăn, quản trị giỏ hàng đồng bộ và mô phỏng giao nhận tích hợp Bản đồ số
 *   **Thông tin**:
     *   Sinh viên thực hiện: [Tên của bạn]
@@ -15,7 +15,7 @@ Tài liệu này cung cấp nội dung chi tiết từng slide, sử dụng chí
 ---
 
 ### Slide 2: Lý do chọn đề tài (Introduction & Problem Statement)
-*   **Thực trạng**: Các hệ thống giao đồ ăn yêu cầu tính thời gian thực cao, dữ liệu nhất quán và định vị địa lý chính xác.
+*   **Thực trạng**: Các hệ thống giao đồ ăn yêu cầu tính thời gian thực cao, dữ liệu nhất quán và định vị địa lý .
 *   **Các vấn đề kỹ thuật cần giải quyết**:
     *   *Mất đồng bộ giỏ hàng*: Khách thêm đồ ăn vào giỏ ở điện thoại nhưng khi đăng nhập trên máy tính lại không thấy.
     *   *Thất thoát kho hàng*: Nhiều người cùng đặt một món ăn có số lượng tồn kho giới hạn cùng một lúc gây ra hiện tượng quá bán (Over-selling).
